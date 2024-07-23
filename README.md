@@ -1,7 +1,7 @@
 # flask-novel-to-txt
 
 ## 概要
-`flask-novel-to-txt` は、web 小説投稿サイト「ハーメルン」における小説本文をtxtファイルへ変換するツールです。
+`flask-novel-to-txt` は、web 小説投稿サイト「ハーメルン」における小説本文をtxtファイルへ変換するPWA対応のツールです。
 
 ## サイト
 [こちら](https://flask-novel-to-txt.onrender.com)から実際のサイトを訪れることができます。
