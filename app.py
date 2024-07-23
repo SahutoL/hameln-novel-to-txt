@@ -78,7 +78,9 @@ def start_scraping():
         nid = match.group(1)
         novel_url = f"https://syosetu.org/novel/{nid}/"
         try:
-            executor.submit(partial(get_novel_txt, novel_url, progress_callback=update_progress))
+            task = threading.Thread(target=start_scraping_task, args=(novel_url, nid))
+            task.start()
+            background_tasks[nid] = task
             return jsonify({"status": "started", "nid": nid})
         except Exception as e:
             return jsonify({"error": str(e)}), 400
