@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, send_file, jsonify
+from flask import Flask, render_template, request, send_file, jsonify, send_from_directory
 import requests
 from bs4 import BeautifulSoup
 import concurrent.futures
@@ -98,6 +98,14 @@ def download_novel(nid):
         return send_file(buffer, as_attachment=True, download_name=f'{title}.txt', mimetype='text/plain')
     else:
         return jsonify({"error": "Novel not found or scraping not completed"}), 404
+
+@app.route('/manifest.json')
+def manifest():
+    return send_from_directory('static', 'manifest.json')
+
+@app.route('/service-worker.js')
+def service_worker():
+    return send_from_directory('static', 'service-worker.js')
 
 if __name__ == '__main__':
     app.run(debug=False)
