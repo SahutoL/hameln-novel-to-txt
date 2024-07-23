@@ -36,7 +36,7 @@ def get_novel_txt(novel_url: str, nid: str):
     with requests.Session() as session:
         response = session.get(novel_url, headers=headers)
         soup = BeautifulSoup(response.text, "html.parser")
-        title = soup.find('div', class_='ss').find('a').text
+        title = soup.find('div', class_='ss').find('span').text
         chapter_count = len(soup.select('a[href^="./"]'))
         
         txt_data = []
