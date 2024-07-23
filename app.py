@@ -5,10 +5,14 @@ import concurrent.futures
 import io
 import re
 from time import sleep
-from functools import partial
 import threading
 
 app = Flask(__name__)
+
+# Global storage for progress, completed novels, and background tasks
+progress_store = {}
+novel_store = {}
+background_tasks = {}
 
 def get_chapter_text(session, url, headers, retry_count=3):
     for _ in range(retry_count):
@@ -20,9 +24,9 @@ def get_chapter_text(session, url, headers, retry_count=3):
         except Exception as e:
             print(f"Error fetching {url}: {str(e)}. Retrying...")
             sleep(1)
-    return ""
+    return ""  # Return empty string if all retries fail
 
-def get_novel_txt(novel_url: str, progress_callback=None):
+def get_novel_txt(novel_url: str, nid: str):
     novel_url = novel_url.rstrip('/') + '/'
     headers = {
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36",
@@ -44,31 +48,21 @@ def get_novel_txt(novel_url: str, progress_callback=None):
                 try:
                     chapter_text = future.result()
                     txt_data.append(chapter_text)
-                    if progress_callback:
-                        progress_callback(chapter_num, chapter_count)
+                    progress_store[nid] = int((chapter_num / chapter_count) * 100)
                 except Exception as exc:
                     print(f'Chapter {chapter_num} generated an exception: {exc}')
         
-        return ['\n\n'.join(txt_data), title]
+        novel_text = '\n\n'.join(txt_data)
+        novel_store[nid] = [novel_text, title]
+        progress_store[nid] = 100
+
+def start_scraping_task(url, nid):
+    get_novel_txt(url, nid)
+    if nid in background_tasks:
+        del background_tasks[nid]
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    if request.method == 'POST':
-        url = request.form['nid']
-        match = re.search(r'https://syosetu.org/novel/(\d+)/', url)
-        if match:
-            nid = match.group(1)
-            novel_url = f"https://syosetu.org/novel/{nid}/"
-            try:
-                novel_text, title = get_novel_txt(novel_url)
-                buffer = io.BytesIO()
-                buffer.write(novel_text.encode('utf-8'))
-                buffer.seek(0)
-                return send_file(buffer, as_attachment=True, download_name=f'{title}.txt', mimetype='text/plain')
-            except Exception as e:
-                return render_template('index.html', error=str(e))
-        else:
-            return render_template('index.html', error="Invalid URL format. Please enter a valid URL.")
     return render_template('index.html')
 
 @app.route('/start-scraping', methods=['POST'])
@@ -79,6 +73,7 @@ def start_scraping():
         nid = match.group(1)
         novel_url = f"https://syosetu.org/novel/{nid}/"
         try:
+            # Start the scraping process in a background thread
             task = threading.Thread(target=start_scraping_task, args=(novel_url, nid))
             task.start()
             background_tasks[nid] = task
@@ -95,22 +90,14 @@ def get_progress(nid):
 
 @app.route('/download/<nid>', methods=['GET'])
 def download_novel(nid):
-    novel_text = novel_store.get(nid)
+    novel_text, title = novel_store.get(nid)
     if novel_text:
         buffer = io.BytesIO()
         buffer.write(novel_text.encode('utf-8'))
         buffer.seek(0)
-        return send_file(buffer, as_attachment=True, download_name=f'novel_{nid}.txt', mimetype='text/plain')
+        return send_file(buffer, as_attachment=True, download_name=f'{title}.txt', mimetype='text/plain')
     else:
         return jsonify({"error": "Novel not found or scraping not completed"}), 404
-
-
-progress_store = {}
-novel_store = {}
-
-def update_progress(chapter, total_chapters, nid):
-    progress = int((chapter / total_chapters) * 100)
-    progress_store[nid] = progress
 
 if __name__ == '__main__':
     app.run(debug=True)
