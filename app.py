@@ -22,6 +22,7 @@ def get_novel_txt(novel_url: str):
     with requests.Session() as session:
         response = session.get(novel_url, headers=headers)
         soup = BeautifulSoup(response.text, "html.parser")
+        title = soup.find('div', class_='ss').find('a').text
         chapter_count = len(soup.select('a[href^="./"]'))
         
         with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
@@ -37,7 +38,7 @@ def get_novel_txt(novel_url: str):
             
             txt_data = '\n'.join(future.result() for future in concurrent.futures.as_completed(futures))
     
-    return txt_data
+    return [txt_data, title]
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -48,11 +49,11 @@ def index():
             nid = match.group(1)
             novel_url = f"https://syosetu.org/novel/{nid}/"
             try:
-                novel_text = get_novel_txt(novel_url)
+                novel_text, title = get_novel_txt(novel_url)
                 buffer = io.BytesIO()
                 buffer.write(novel_text.encode('utf-8'))
                 buffer.seek(0)
-                return send_file(buffer, as_attachment=True, download_name=f'novel_{nid}.txt', mimetype='text/plain')
+                return send_file(buffer, as_attachment=True, download_name=f'{title}.txt', mimetype='text/plain')
             except Exception as e:
                 return render_template('index.html', error=str(e))
         else:
