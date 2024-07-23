@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, send_file
 import requests
 from bs4 import BeautifulSoup
 import concurrent.futures
-import io
+import io, re
 
 app = Flask(__name__)
 
