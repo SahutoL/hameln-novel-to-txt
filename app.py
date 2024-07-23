@@ -100,4 +100,4 @@ def download_novel(nid):
         return jsonify({"error": "Novel not found or scraping not completed"}), 404
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
