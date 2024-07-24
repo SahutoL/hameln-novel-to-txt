@@ -1,10 +1,10 @@
-# flask-novel-to-txt
+# hameln-novel-to-txt
 
 ## 概要
-`flask-novel-to-txt` は、web 小説投稿サイト「ハーメルン」における小説本文をtxtファイルへ変換するPWA対応のツールです。
+`hameln-novel-to-txt` は、web 小説投稿サイト「ハーメルン」における小説本文をtxtファイルへ変換するPWA対応のツールです。
 
 ## サイト
-[こちら](https://flask-novel-to-txt.onrender.com)から実際のサイトを訪れることができます。
+[こちら](https://hameln-novel-to-txt.onrender.com)から実際のサイトを訪れることができます。
 
 ## 機能
 
@@ -18,8 +18,8 @@
 このリポジトリをクローンし、必要なパッケージをインストールしてください。
 
 ```bash
-git clone https://github.com/SahutoL/flask-novel-to-txt.git
-cd flask-novel-to-txt
+git clone https://github.com/SahutoL/hameln-novel-to-txt.git
+cd hameln-novel-to-txt
 python -m venv venv
 . venv/bin/activate  # On Windows use `venv\Scripts\activate`
 pip install -r requirements.txt
@@ -56,4 +56,4 @@ uvicorn app:app --reload
 
 ## 連絡先
 
-質問や提案がある場合は、[Issues](https://github.com/SahutoL/flask-novel-to-txt/issues)を開いてください。
+質問や提案がある場合は、[Issues](https://github.com/SahutoL/hameln-novel-to-txt/issues)を開いてください。
