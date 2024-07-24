@@ -34,6 +34,31 @@
         #progress-bar {
             display: none;
         }
+        .search-result {
+            margin-top: 20px;
+        }
+        .search-result-item {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+        .search-result-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .search-result-item a {
+            display: block;
+            padding: 15px;
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .search-result-item a:hover {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
     </style>
 </head>
 <body>
@@ -145,41 +170,49 @@
              });
      }
      document.getElementById('search-form').addEventListener('submit', function(e) {
-         e.preventDefault();
-         var word = document.getElementById('word').value;
-         var searchResult = document.getElementById('search-result');
-         var searchResultContent = document.querySelector('.search-result');
+            e.preventDefault();
+            var word = document.getElementById('word').value;
+            var searchResult = document.getElementById('search-result');
+            var searchResultContent = document.querySelector('.search-result');
+            var searchBtn = document.getElementById('search-btn');
 
-         fetch('/search', {
-             method: 'POST',
-             headers: {
-                 'Content-Type': 'application/x-www-form-urlencoded',
-             },
-             body: 'word=' + encodeURIComponent(word)
-         })
-             .then(response => response.json())
-             .then(data => {
-                 if (data.error) {
-                     throw new Error(data.error);
-                 }
-                 searchResultContent.innerHTML = '';
-                 data.results.forEach(result => {
-                     var link = document.createElement('a');
-                     link.href = result.link;
-                     link.textContent = result.title;
-                     link.target = '_blank';
-                     var listItem = document.createElement('div');
-                     listItem.appendChild(link);
-                     searchResultContent.appendChild(listItem);
-                 });
-                 searchResult.style.display = 'block';
-                 console.log(data.result);
-             })
-             .catch(error => {
-                 searchResultContent.innerHTML = '<p>エラーが発生しました: ' + error.message + '</p>';
-                 searchResult.style.display = 'block';
-             });
-     });
+            searchBtn.disabled = true;
+            searchBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> 検索中...';
+
+            fetch('/search', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'word=' + encodeURIComponent(word)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                searchResultContent.innerHTML = '';
+                data.results.forEach(result => {
+                    var listItem = document.createElement('div');
+                    listItem.className = 'search-result-item';
+                    var link = document.createElement('a');
+                    link.href = result.link;
+                    link.textContent = result.title;
+                    link.target = '_blank';
+                    listItem.appendChild(link);
+                    searchResultContent.appendChild(listItem);
+                });
+                searchResult.style.display = 'block';
+            })
+            .catch(error => {
+                searchResultContent.innerHTML = '<p class="alert alert-danger">エラーが発生しました: ' + error.message + '</p>';
+                searchResult.style.display = 'block';
+            })
+            .finally(() => {
+                searchBtn.disabled = false;
+                searchBtn.innerHTML = '検索';
+            });
+        });
     </script>
 </body>
 </html>
