@@ -120,7 +120,7 @@ def search():
     word = request.form['word']
     parody = request.form['parody']
     type_value = request.form['type']
-    url = f"https://syosetu.org/?word={word}&gensaku={parody}&type={type_value}"
+    url = f"https://syosetu.org/search/?word={word}&gensaku={parody}&type={type_value}"
     headers = {
         "User-Agent": get_random_user_agent(),
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
