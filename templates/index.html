@@ -562,6 +562,20 @@
                 type: type,
                 mode: checkedR18 ? 'search_r18' : 'search'
             });
+            
+            var filterParams = [
+            'mozi2', 'mozi1', 'mozi2_all', 'mozi1_all', 'rate2', 'rate1', 'soupt2', 'soupt1', 'f2', 'f1', 're2', 're1', 'v2', 'v1', 'r2', 'r1', 't2', 't1'
+            ];
+            
+            filterParams.forEach(function(param) {
+                var value = document.querySelector(`input[name="${param}"]`).value;
+                if (value) {
+                    bodyParams.append(param, value);
+                }
+                else {
+                    bodyParama.append(param, "");
+                }
+            });
 
             fetch('/search', {
                 method: 'POST',
