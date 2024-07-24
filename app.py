@@ -127,7 +127,7 @@ def search():
     }
     with get_session() as session:
         try:
-            response = session.get(url, headers=headers)
+            response = session.get(url, headers=headers, cookies={'list_num':'50'})
             soup = BeautifulSoup(response.text, 'html.parser')
             novels = soup.find_all('div', class_='section3')
 
