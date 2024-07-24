@@ -7,7 +7,8 @@
     <meta name="google-site-verification" content="oj6R_3BjNgPvcrKnDBeWOUwj9Lqkew1pLqE6c-tSDmU" />
     <title>Hameln -> .txt</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="manifest" href="/manifest.json">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="manifest" href="/manifest.json">
     <style>
         body {
             background-color: #f8f9fa;
@@ -34,30 +35,37 @@
         #progress-bar {
             display: none;
         }
-        .search-result {
-            margin-top: 20px;
-        }
         .search-result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             background-color: #ffffff;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             margin-bottom: 10px;
             transition: all 0.3s ease;
+            padding: 15px;
         }
         .search-result-item:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
         .search-result-item a {
-            display: block;
-            padding: 15px;
             color: #333;
             text-decoration: none;
             font-weight: 500;
+            flex-grow: 1;
         }
         .search-result-item a:hover {
-            background-color: #f8f9fa;
-            border-radius: 8px;
+            text-decoration: underline;
+        }
+        .link-input-icon {
+            cursor: pointer;
+            color: #007bff;
+            margin-left: 10px;
+        }
+        .link-input-icon:hover {
+            color: #0056b3;
         }
     </style>
 </head>
@@ -192,16 +200,21 @@
                     throw new Error(data.error);
                 }
                 searchResultContent.innerHTML = '';
-                console.log(data);
                 data.results.forEach(result => {
-                    console.log(result);
                     var listItem = document.createElement('div');
                     listItem.className = 'search-result-item';
                     var link = document.createElement('a');
                     link.href = result.link;
                     link.textContent = result.title;
                     link.target = '_blank';
+                    var icon = document.createElement('i');
+                    icon.className = 'fa-regular fa-pen-to-square link-input-icon';
+                    icon.setAttribute('data-link', result.link);
+                    icon.addEventListener('click', function() {
+                        document.getElementById('nid').value = this.getAttribute('data-link');
+                    });
                     listItem.appendChild(link);
+                    listItem.appendChild(icon);
                     searchResultContent.appendChild(listItem);
                 });
                 searchResult.style.display = 'block';
