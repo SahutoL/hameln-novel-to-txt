@@ -1,46 +1,62 @@
 from flask import Flask, render_template, request, send_file, jsonify, send_from_directory
 import requests
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 from bs4 import BeautifulSoup
 import concurrent.futures
-import io
-import re
 from time import sleep
-import threading
+import threading, io, re, random
 
 app = Flask(__name__)
 
-# Global storage for progress, completed novels, and background tasks
 progress_store = {}
 novel_store = {}
 background_tasks = {}
 
+def get_session():
+    session = requests.Session()
+    retry = Retry(total=3, backoff_factor=0.1, status_forcelist=[500, 502, 503, 504])
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount('http://', adapter)
+    session.mount('https://', adapter)
+    return session
+
+def get_random_user_agent():
+    user_agents = [
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Safari/605.1.15",
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36"
+    ]
+    return random.choice(user_agents)
+
+
 def get_chapter_text(session, url, headers, retry_count=3):
     for _ in range(retry_count):
         try:
-            response = session.get(url, headers=headers)
+            response = session.get(url, headers=headers, cookies={'over18':'off'})
             soup = BeautifulSoup(response.text, "html.parser")
             chapter_text = '\n'.join(p.text for p in soup.find(id='honbun').find_all('p'))
             return chapter_text
         except Exception as e:
             print(f"Error fetching {url}: {str(e)}. Retrying...")
             sleep(1)
-    return ""  # Return empty string if all retries fail
+    return ""
 
 def get_novel_txt(novel_url: str, nid: str):
     novel_url = novel_url.rstrip('/') + '/'
     headers = {
-        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36",
+        "User-Agent": get_random_user_agent(),
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
     }
-    
-    with requests.Session() as session:
+
+    with get_session() as session:
         response = session.get(novel_url, headers=headers, cookies={'over18':'off'})
         soup = BeautifulSoup(response.text, "html.parser")
         title = soup.find('div', class_='ss').find('span', attrs={'itemprop':'name'}).text
         chapter_count = len(soup.select('a[href^="./"]'))
-        
+
         txt_data = []
-        
+
         with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
             future_to_url = {executor.submit(get_chapter_text, session, f'{novel_url}{i+1}.html', headers): i for i in range(chapter_count)}
             for future in concurrent.futures.as_completed(future_to_url):
@@ -51,7 +67,7 @@ def get_novel_txt(novel_url: str, nid: str):
                     progress_store[nid] = int((chapter_num / chapter_count) * 100)
                 except Exception as exc:
                     print(f'Chapter {chapter_num} generated an exception: {exc}')
-        
+
         novel_text = '\n\n'.join(txt_data)
         novel_store[nid] = [novel_text, title]
         progress_store[nid] = 100
@@ -98,6 +114,32 @@ def download_novel(nid):
         return send_file(buffer, as_attachment=True, download_name=f'{title}.txt', mimetype='text/plain')
     else:
         return jsonify({"error": "Novel not found or scraping not completed"}), 404
+
+@app.route('/search', methods=['POST'])
+def search():
+    word = request.form['word']
+    url = f"https://syosetu.org/search/?word={word}"
+    headers = {
+        "User-Agent": get_random_user_agent(),
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+    }
+    with get_session() as session:
+        try:
+            response = session.get(url, headers=headers)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            novels = soup.find_all('div', class_='section3')
+
+            results = []
+            for novel in novels:
+                title = novel.find('a').text
+                link = novel.find('a').get('href')
+                results.append({'title': title, 'link': link})
+
+                print(result)
+
+                return jsonify({'results': results})
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
 
 @app.route('/manifest.json')
 def manifest():
