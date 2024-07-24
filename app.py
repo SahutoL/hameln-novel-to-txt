@@ -156,7 +156,10 @@ def search():
             for novel in novels:
                 title = novel.find('a').text
                 link = novel.find('a').get('href')
-                results.append({'title': title, 'link': link})
+                author = novel.find_all('a')[2].text
+                parody = novel.find_all('a')[1].text
+                description = novel.find('div', class_='blo_inword').text
+                results.append({'title': title, 'link': link, 'author': author, 'parody': parody, 'description': description})
             return jsonify({'results': results})
         except Exception as e:
             return jsonify({'error': str(e)}), 500
