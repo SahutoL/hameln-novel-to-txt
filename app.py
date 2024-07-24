@@ -134,10 +134,7 @@ def search():
                 title = novel.find('a').text
                 link = novel.find('a').get('href')
                 results.append({'title': title, 'link': link})
-
-                print(result)
-
-                return jsonify({'results': results})
+            return jsonify({'results': results})
         except Exception as e:
             return jsonify({'error': str(e)}), 500
 
