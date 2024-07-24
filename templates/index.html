@@ -12,6 +12,7 @@
     <style>
         body {
             background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         .container {
             max-width: 600px;
@@ -37,36 +38,50 @@
             display: none;
         }
         .search-result-item {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        .search-result-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .search-result-header {
+            padding: 15px;
+            cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 10px;
-            transition: all 0.3s ease;
-            padding: 15px;
         }
-        .search-result-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        .search-result-item a {
+        .search-result-header h3 {
+            margin: 0;
+            font-size: 1.1rem;
             color: #333;
-            text-decoration: none;
-            font-weight: 500;
-            flex-grow: 1;
         }
-        .search-result-item a:hover {
-            text-decoration: underline;
+        .search-result-content {
+            padding: 0 15px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        .search-result-content.active {
+            max-height: 500px;
+            padding-bottom: 15px;
+        }
+        .read-button {
+            margin-top: 10px;
         }
         .link-input-icon {
             cursor: pointer;
-            color: #007bff;
+            color: #4a90e2;
             margin-left: 10px;
+            transition: color 0.3s ease;
         }
         .link-input-icon:hover {
-            color: #0056b3;
+            color: #3a7bc8;
         }
         .select-wrapper {
             position: relative;
@@ -590,18 +605,41 @@
                 data.results.forEach(result => {
                     var listItem = document.createElement('div');
                     listItem.className = 'search-result-item';
-                    var link = document.createElement('a');
-                    link.href = result.link;
-                    link.textContent = result.title;
-                    link.target = '_blank';
+                    
+                    var header = document.createElement('div');
+                    header.className = 'search-result-header';
+                    header.innerHTML = `<h3>${result.title}</h3><i class="fas fa-chevron-down"></i>`;
+                    
+                    var content = document.createElement('div');
+                    content.className = 'search-result-content';
+                    content.innerHTML = `
+                        <p><strong>作者:</strong> ${result.author}</p>
+                        <p><strong>原作:</strong> ${result.parody}</p>
+                        <p><strong>説明:</strong> ${result.description}</p>
+                        <button class="btn btn-primary btn-sm read-button">小説を読む</button>
+                    `;
+                    
                     var icon = document.createElement('i');
                     icon.className = 'fa-regular fa-pen-to-square link-input-icon';
                     icon.setAttribute('data-link', result.link);
+                    
+                    listItem.appendChild(header);
+                    listItem.appendChild(content);
+                    listItem.appendChild(icon);
+                    
+                    header.addEventListener('click', function() {
+                        content.classList.toggle('active');
+                        header.querySelector('i').classList.toggle('fa-chevron-up');
+                    });
+                    
+                    content.querySelector('.read-button').addEventListener('click', function() {
+                        window.open(`https:${result.link}`, '_blank');
+                    });
+                    
                     icon.addEventListener('click', function() {
                         document.getElementById('nid').value = `https:${this.getAttribute('data-link')}`;
                     });
-                    listItem.appendChild(link);
-                    listItem.appendChild(icon);
+                    
                     searchResultContent.appendChild(listItem);
                 });
                 searchResult.style.display = 'block';
