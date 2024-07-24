@@ -118,16 +118,17 @@ def download_novel(nid):
 @app.route('/search', methods=['POST'])
 def search():
     word = request.form['word']
+    checkedR18 = request.form['checkedR18']
     parody = request.form['parody']
     type_value = request.form['type']
-    url = f"https://syosetu.org/search/?word={word}&gensaku={parody}&type={type_value}"
+    url = f"https://syosetu.org/search/?{checkedR18}&word={word}&gensaku={parody}&type={type_value}"
     headers = {
         "User-Agent": get_random_user_agent(),
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
     }
     with get_session() as session:
         try:
-            response = session.get(url, headers=headers, cookies={'list_num':'50'})
+            response = session.get(url, headers=headers, cookies={'over18':'off', 'list_num':'50'})
             soup = BeautifulSoup(response.text, 'html.parser')
             novels = soup.find_all('div', class_='section3')
 
