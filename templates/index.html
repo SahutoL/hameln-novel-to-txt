@@ -192,7 +192,9 @@
                     throw new Error(data.error);
                 }
                 searchResultContent.innerHTML = '';
+                console.log(data);
                 data.results.forEach(result => {
+                    console.log(result);
                     var listItem = document.createElement('div');
                     listItem.className = 'search-result-item';
                     var link = document.createElement('a');
