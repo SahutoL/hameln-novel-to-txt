@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, send_file, jsonify, send_from
 import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
+from urllib.parse import urlencode
 from bs4 import BeautifulSoup
 import concurrent.futures
 from time import sleep
