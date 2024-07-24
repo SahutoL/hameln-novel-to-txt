@@ -118,10 +118,10 @@ def download_novel(nid):
 @app.route('/search', methods=['POST'])
 def search():
     word = request.form['word']
-    checkedR18 = request.form['checkedR18']
+    checkedR18 = request.form['mode']
     parody = request.form['parody']
     type_value = request.form['type']
-    url = f"https://syosetu.org/search/?{checkedR18}&word={word}&gensaku={parody}&type={type_value}"
+    url = f"https://syosetu.org/search/?mode={checkedR18}&word={word}&gensaku={parody}&type={type_value}"
     headers = {
         "User-Agent": get_random_user_agent(),
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
