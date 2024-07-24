@@ -129,58 +129,198 @@
                         <input type="text" class="form-control" id="word" name="word" placeholder="検索ワードを入力...">
                         <div class="form-text">小説を検索してURLを取得します。</div>
                     </div>
+
                     <div class="mb-3">
-                    <label for="type" class="form-label">並び順:</label>
-                    <div class="select-wrapper">
-                        <select id="type" name="type" class="custom-select">
-                            <option value="0">最終更新日時(新しい順)</option>
-                            <option value="1">最終更新日時(古い順)</option>
-                            <option value="28">総合評価</option>
-                            <option value="2">通算UA数(多い順)</option>
-                            <option value="3">通算UA数(少ない順)</option>
-                            <option value="4">平均評価(高い順)</option>
-                            <option value="5">平均評価(低い順)</option>
-                            <option value="42">加重平均(高い順)</option>
-                            <option value="43">加重平均(低い順)</option>
-                            <option value="6">1話あたりの文字数(多い順)</option>
-                            <option value="7">1話あたりの文字数(少ない順)</option>
-                            <option value="8">初回投稿日(新しい順)</option>
-                            <option value="9">初回投稿日(古い順) </option>
-                            <option value="10">お気に入り数(多い順)</option>
-                            <option value="11">お気に入り数(少ない順)</option>
-                            <option value="38">しおり数(多い順)</option>
-                            <option value="39">しおり数(少ない順)</option>
-                            <option value="40">ここすき数(多い順)</option>
-                            <option value="41">ここすき数(少ない順)</option>
-                            <option value="12">今週UA数(多い順)</option>
-                            <option value="13">今週UA数(少ない順)</option>
-                            <option value="14">先週UA数(多い順)</option>
-                            <option value="15">先週UA数(少ない順)</option>
-                            <option value="16">投票者数(多い順)</option>
-                            <option value="17">投票者数(少ない順)</option>
-                            <option value="18">総評価数(多い順)</option>
-                            <option value="19">総評価数(少ない順)</option>
-                            <option value="20">総文字数(多い順)</option>
-                            <option value="21">総文字数(少ない順)</option>
-                            <option value="22">感想数(多い順)</option>
-                            <option value="23">感想数(少ない順)   </option>
-                            <option value="24">話数(多い順)</option>
-                            <option value="25">話数(少ない順)</option>
-                            <option value="26">中央値(高い順)</option>
-                            <option value="27">中央値(低い順) </option>
-                            <option value="29">日間総合評価</option>
-                            <option value="30">週間総合評価</option>
-                            <option value="31">月間総合評価</option>
-                            <option value="32">四半期総合評価</option>
-                            <option value="33">年間総合評価</option>
-                            <option value="34">Wilson Score Interval</option>
-                            <option value="35">相対評価</option>
-                            <option value="36">ピックアップ(総合評価/UA)</option>
-                            <option value="37">ランダム</option>
-                        </select>
-                        <span class="select-arrow">▼</span>
+                        <label for="parody" class="form-label">原作:</label>
+                        <div class="select-wrapper">
+                            <select id="parody" name="parody" class="custom-select">
+                                <option value="">----原作カテゴリ----</option>
+                                <option value="その他原作">その他原作</option>
+                                <option value="原作：二次創作">二次創作</option>
+                                <option value="原作：オリジナル">オリジナル</option>
+                                <option value="原作：ARMORED CORE">ARMORED CORE</option>
+                                <option value="原作：BanG Dream!">BanG Dream!</option>
+                                <option value="原作：BLEACH">BLEACH</option>
+                                <option value="原作：FAIRY TAIL">FAIRY TAIL</option>
+                                <option value="原作：Fate/">Fate/</option>
+                                <option value="原作：GOD EATER">GOD EATER</option>
+                                <option value="原作：HUNTER×HUNTER">HUNTER×HUNTER</option>
+                                <option value="原作：Infinite Dendrogram">Infinite Dendrogram</option>
+                                <option value="原作：Muv-Luv">Muv-Luv</option>
+                                <option value="原作：NARUTO">NARUTO</option>
+                                <option value="原作：NEW GAME!">NEW GAME!</option>
+                                <option value="原作：ONE PIECE">ONE PIECE</option>
+                                <option value="原作：Re:ゼロから始める異世界生活">Re:ゼロから始める異世界生活</option>
+                                <option value="原作：VOICEROID">VOICEROID</option>
+                                <option value="原作：アークナイツ">アークナイツ</option>
+                                <option value="原作：アイドルマスター">アイドルマスター</option>
+                                <option value="原作：アカメが斬る!">アカメが斬る!</option>
+                                <option value="原作：アクタージュ">アクタージュ</option>
+                                <option value="原作：アサルトリリィ">アサルトリリィ</option>
+                                <option value="原作：アズールレーン">アズールレーン</option>
+                                <option value="原作：ありふれた職業で世界最強">ありふれた職業で世界最強</option>
+                                <option value="原作：暗殺教室">暗殺教室</option>
+                                <option value="原作：痛いのは嫌なので防御力に極振りしたいと思います。">痛いのは嫌なので防御力に極振りしたいと思います。</option>
+                                <option value="原作：イナズマイレブン">イナズマイレブン</option>
+                                <option value="原作：インフィニット・ストラトス">インフィニット・ストラトス</option>
+                                <option value="原作：ウルトラマン">ウルトラマン</option>
+                                <option value="原作：ウマ娘プリティーダービー">ウマ娘プリティーダービー</option>
+                                <option value="原作：英雄伝説">英雄伝説</option>
+                                <option value="原作：オーバーロード">オーバーロード</option>
+                                <option value="原作：推しの子">推しの子</option>
+                                <option value="原作：ガールズ＆パンツァー">ガールズ＆パンツァー</option>
+                                <option value="原作：学戦都市アスタリスク">学戦都市アスタリスク</option>
+                                <option value="原作：かぐや様は告らせたい">かぐや様は告らせたい</option>
+                                <option value="原作：陰の実力者になりたくて！">陰の実力者になりたくて！</option>
+                                <option value="原作：がっこうぐらし！">がっこうぐらし！</option>
+                                <option value="原作：家庭教師ヒットマンREBORN!">家庭教師ヒットマンREBORN!</option>
+                                <option value="原作：仮面ライダー">仮面ライダー</option>
+                                <option value="原作：艦隊これくしょん">艦隊これくしょん</option>
+                                <option value="原作：ガンダム">ガンダム</option>
+                                <option value="原作：カンピオーネ！">カンピオーネ！</option>
+                                <option value="原作：鬼滅の刃">鬼滅の刃</option>
+                                <option value="原作：銀河英雄伝説">銀河英雄伝説</option>
+                                <option value="原作：蜘蛛ですが、なにか？">蜘蛛ですが、なにか？</option>
+                                <option value="原作：グランブルーファンタジー">グランブルーファンタジー</option>
+                                <option value="原作：ゲート 自衛隊 彼の地にて、斯く戦えり">ゲート 自衛隊 彼の地にて、斯く戦えり</option>
+                                <option value="原作：けものフレンズ">けものフレンズ</option>
+                                <option value="原作：原神">原神</option>
+                                <option value="原作：恋姫†無双">恋姫†無双</option>
+                                <option value="原作：コードギアス">コードギアス</option>
+                                <option value="原作：ご注文はうさぎですか？">ご注文はうさぎですか？</option>
+                                <option value="原作：五等分の花嫁">五等分の花嫁</option>
+                                <option value="原作：この素晴らしい世界に祝福を！">この素晴らしい世界に祝福を！</option>
+                                <option value="原作：ゴブリンスレイヤー">ゴブリンスレイヤー</option>
+                                <option value="原作：咲-Saki-">咲-Saki-</option>
+                                <option value="原作：シャングリラ・フロンティア">シャングリラ・フロンティア</option>
+                                <option value="原作：呪術廻戦">呪術廻戦</option>
+                                <option value="原作：食戟のソーマ">食戟のソーマ</option>
+                                <option value="原作：ジョジョの奇妙な冒険">ジョジョの奇妙な冒険</option>
+                                <option value="原作：進撃の巨人">進撃の巨人</option>
+                                <option value="原作：新世紀エヴァンゲリオン">新世紀エヴァンゲリオン</option>
+                                <option value="原作：スーパーロボット大戦">スーパーロボット大戦</option>
+                                <option value="原作：ストライクウィッチーズ">ストライクウィッチーズ</option>
+                                <option value="原作：ストライク・ザ・ブラッド">ストライク・ザ・ブラッド</option>
+                                <option value="原作：ゼロの使い魔">ゼロの使い魔</option>
+                                <option value="原作：戦姫絶唱シンフォギア">戦姫絶唱シンフォギア</option>
+                                <option value="原作：ソードアート・オンライン">ソードアート・オンライン</option>
+                                <option value="原作：葬送のフリーレン">葬送のフリーレン</option>
+                                <option value="原作：ダイの大冒険">ダイの大冒険</option>
+                                <option value="原作：対魔忍">対魔忍</option>
+                                <option value="原作：盾の勇者の成り上がり">盾の勇者の成り上がり</option>
+                                <option value="原作：ダンガンロンパ">ダンガンロンパ</option>
+                                <option value="原作：ダンジョンに出会いを求めるのは間違っているだろうか">ダンジョンに出会いを求めるのは間違っているだろうか</option>
+                                <option value="原作：チェンソーマン">チェンソーマン</option>
+                                <option value="原作：超次元ゲイムネプテューヌ">超次元ゲイムネプテューヌ</option>
+                                <option value="原作：デート・ア・ライブ">デート・ア・ライブ</option>
+                                <option value="原作：テイルズオブ">テイルズオブ</option>
+                                <option value="原作：転生したらスライムだった件">転生したらスライムだった件</option>
+                                <option value="原作：ドールズフロントライン">ドールズフロントライン</option>
+                                <option value="原作：とある魔術の禁書目録">とある魔術の禁書目録</option>
+                                <option value="原作：東京喰種">東京喰種</option>
+                                <option value="原作：東方Project">東方Project</option>
+                                <option value="原作：刀使ノ巫女">刀使ノ巫女</option>
+                                <option value="原作：ドラゴンクエスト">ドラゴンクエスト</option>
+                                <option value="原作：ドラゴンボール">ドラゴンボール</option>
+                                <option value="原作：ニセコイ">ニセコイ</option>
+                                <option value="原作：日本国召喚">日本国召喚</option>
+                                <option value="原作：ハイスクールD×D">ハイスクールD×D</option>
+                                <option value="原作：ハイスクール・フリート">ハイスクール・フリート</option>
+                                <option value="原作：ハイキュー!!">ハイキュー!!</option>
+                                <option value="原作：バカとテストと召喚獣">バカとテストと召喚獣</option>
+                                <option value="原作：ハリー・ポッター">ハリー・ポッター</option>
+                                <option value="原作：緋弾のアリア">緋弾のアリア</option>
+                                <option value="原作：ファイアーエムブレム">ファイアーエムブレム</option>
+                                <option value="原作：プリキュア">プリキュア</option>
+                                <option value="原作：プリンセスコネクト！Re:Dive">プリンセスコネクト！Re:Dive</option>
+                                <option value="原作：ブルーアーカイブ">ブルーアーカイブ</option>
+                                <option value="原作：ブルーロック">ブルーロック</option>
+                                <option value="原作：プロジェクトセカイ">プロジェクトセカイ</option>
+                                <option value="原作：ペルソナ">ペルソナ</option>
+                                <option value="原作：崩壊：スターレイル">崩壊：スターレイル</option>
+                                <option value="原作：僕のヒーローアカデミア">僕のヒーローアカデミア</option>
+                                <option value="原作：ポケットモンスター">ポケットモンスター</option>
+                                <option value="原作：ぼっち・ざ・ろっく！">ぼっち・ざ・ろっく！</option>
+                                <option value="原作：真剣で私に恋しなさい!">真剣で私に恋しなさい!</option>
+                                <option value="原作：魔法科高校の劣等生">魔法科高校の劣等生</option>
+                                <option value="原作：魔法少女まどか☆マギカ">魔法少女まどか☆マギカ</option>
+                                <option value="原作：魔法少女リリカルなのは">魔法少女リリカルなのは</option>
+                                <option value="原作：魔法先生ネギま！">魔法先生ネギま！</option>
+                                <option value="原作：無職転生">無職転生</option>
+                                <option value="原作：名探偵コナン">名探偵コナン</option>
+                                <option value="原作：メイドインアビス">メイドインアビス</option>
+                                <option value="原作：女神転生">女神転生</option>
+                                <option value="原作：モンスターハンター">モンスターハンター</option>
+                                <option value="原作：問題児たちが異世界から来るそうですよ？">問題児たちが異世界から来るそうですよ？</option>
+                                <option value="原作：やはり俺の青春ラブコメはまちがっている。">やはり俺の青春ラブコメはまちがっている。</option>
+                                <option value="原作：遊戯王">遊戯王</option>
+                                <option value="原作：結城友奈は勇者である">結城友奈は勇者である</option>
+                                <option value="原作：ゆるキャン△">ゆるキャン△</option>
+                                <option value="原作：ようこそ実力至上主義の教室へ">ようこそ実力至上主義の教室へ</option>
+                                <option value="原作：幼女戦記">幼女戦記</option>
+                                <option value="原作：落第騎士の英雄譚">落第騎士の英雄譚</option>
+                                <option value="原作：ラブライブ！">ラブライブ！</option>
+                                <option value="原作：ランスシリーズ">ランスシリーズ</option>
+                                <option value="原作：リコリス・リコイル">リコリス・リコイル</option>
+                                <option value="原作：りゅうおうのおしごと！">りゅうおうのおしごと！</option>
+                                <option value="原作：ロクでなし魔術講師と禁忌教典">ロクでなし魔術講師と禁忌教典</option>
+                                <option value="原作：ワールドトリガー">ワールドトリガー</option>
+                            </select>
+                        </div>
                     </div>
-                </div>
+
+                    <div class="mb-3">
+                        <label for="type" class="form-label">並び替え:</label>
+                        <div class="select-wrapper">
+                            <select id="type" name="type" class="custom-select">
+                                <option value="0">最終更新日時(新しい順)</option>
+                                <option value="1">最終更新日時(古い順)</option>
+                                <option value="28">総合評価</option>
+                                <option value="2">通算UA数(多い順)</option>
+                                <option value="3">通算UA数(少ない順)</option>
+                                <option value="4">平均評価(高い順)</option>
+                                <option value="5">平均評価(低い順)</option>
+                                <option value="42">加重平均(高い順)</option>
+                                <option value="43">加重平均(低い順)</option>
+                                <option value="6">1話あたりの文字数(多い順)</option>
+                                <option value="7">1話あたりの文字数(少ない順)</option>
+                                <option value="8">初回投稿日(新しい順)</option>
+                                <option value="9">初回投稿日(古い順) </option>
+                                <option value="10">お気に入り数(多い順)</option>
+                                <option value="11">お気に入り数(少ない順)</option>
+                                <option value="38">しおり数(多い順)</option>
+                                <option value="39">しおり数(少ない順)</option>
+                                <option value="40">ここすき数(多い順)</option>
+                                <option value="41">ここすき数(少ない順)</option>
+                                <option value="12">今週UA数(多い順)</option>
+                                <option value="13">今週UA数(少ない順)</option>
+                                <option value="14">先週UA数(多い順)</option>
+                                <option value="15">先週UA数(少ない順)</option>
+                                <option value="16">投票者数(多い順)</option>
+                                <option value="17">投票者数(少ない順)</option>
+                                <option value="18">総評価数(多い順)</option>
+                                <option value="19">総評価数(少ない順)</option>
+                                <option value="20">総文字数(多い順)</option>
+                                <option value="21">総文字数(少ない順)</option>
+                                <option value="22">感想数(多い順)</option>
+                                <option value="23">感想数(少ない順)   </option>
+                                <option value="24">話数(多い順)</option>
+                                <option value="25">話数(少ない順)</option>
+                                <option value="26">中央値(高い順)</option>
+                                <option value="27">中央値(低い順) </option>
+                                <option value="29">日間総合評価</option>
+                                <option value="30">週間総合評価</option>
+                                <option value="31">月間総合評価</option>
+                                <option value="32">四半期総合評価</option>
+                                <option value="33">年間総合評価</option>
+                                <option value="34">Wilson Score Interval</option>
+                                <option value="35">相対評価</option>
+                                <option value="36">ピックアップ(総合評価/UA)</option>
+                                <option value="37">ランダム</option>
+                            </select>
+                            <span class="select-arrow">▼</span>
+                        </div>
+                    </div>
                     <div class="d-grid">
                         <button type="submit" class="btn btn-primary" id="search-btn">検索</button>
                     </div>
@@ -259,6 +399,7 @@
      document.getElementById('search-form').addEventListener('submit', function(e) {
             e.preventDefault();
             var word = document.getElementById('word').value;
+            var parody = document.getElementById('parody').value;
             var type = document.getElementById('type').value;
             var searchResult = document.getElementById('search-result');
             var searchResultContent = document.querySelector('.search-result');
@@ -272,7 +413,7 @@
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: 'word=' + encodeURIComponent(word) + '&type=' + encodeURIComponent(type)
+                body: 'word=' + encodeURIComponent(word) + '&parody=' + encodeURIComponent(parody) + '&type=' + encodeURIComponent(type)
             })
             .then(response => response.json())
             .then(data => {
