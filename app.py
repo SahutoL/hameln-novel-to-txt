@@ -118,7 +118,8 @@ def download_novel(nid):
 @app.route('/search', methods=['POST'])
 def search():
     word = request.form['word']
-    url = f"https://syosetu.org/search/?word={word}"
+    type_value = request.form['type']
+    url = f"https://syosetu.com/?word={word}&type={type_value}"
     headers = {
         "User-Agent": get_random_user_agent(),
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
