@@ -67,6 +67,33 @@
         .link-input-icon:hover {
             color: #0056b3;
         }
+        .select-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        .custom-select {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 100%;
+            padding: 10px 35px 10px 10px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            background-color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .select-arrow {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+        .custom-select:focus {
+            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        }
     </style>
 </head>
 <body>
@@ -102,6 +129,58 @@
                         <input type="text" class="form-control" id="word" name="word" placeholder="検索ワードを入力...">
                         <div class="form-text">小説を検索してURLを取得します。</div>
                     </div>
+                    <div class="mb-3">
+                    <label for="type" class="form-label">並び順:</label>
+                    <div class="select-wrapper">
+                        <select id="type" name="type" class="custom-select">
+                            <option value="0">最終更新日時(新しい順)</option>
+                            <option value="1">最終更新日時(古い順)</option>
+                            <option value="28">総合評価</option>
+                            <option value="2">通算UA数(多い順)</option>
+                            <option value="3">通算UA数(少ない順)</option>
+                            <option value="4">平均評価(高い順)</option>
+                            <option value="5">平均評価(低い順)</option>
+                            <option value="42">加重平均(高い順)</option>
+                            <option value="43">加重平均(低い順)</option>
+                            <option value="6">1話あたりの文字数(多い順)</option>
+                            <option value="7">1話あたりの文字数(少ない順)</option>
+                            <option value="8">初回投稿日(新しい順)</option>
+                            <option value="9">初回投稿日(古い順) </option>
+                            <option value="10">お気に入り数(多い順)</option>
+                            <option value="11">お気に入り数(少ない順)</option>
+                            <option value="38">しおり数(多い順)</option>
+                            <option value="39">しおり数(少ない順)</option>
+                            <option value="40">ここすき数(多い順)</option>
+                            <option value="41">ここすき数(少ない順)</option>
+                            <option value="12">今週UA数(多い順)</option>
+                            <option value="13">今週UA数(少ない順)</option>
+                            <option value="14">先週UA数(多い順)</option>
+                            <option value="15">先週UA数(少ない順)</option>
+                            <option value="16">投票者数(多い順)</option>
+                            <option value="17">投票者数(少ない順)</option>
+                            <option value="18">総評価数(多い順)</option>
+                            <option value="19">総評価数(少ない順)</option>
+                            <option value="20">総文字数(多い順)</option>
+                            <option value="21">総文字数(少ない順)</option>
+                            <option value="22">感想数(多い順)</option>
+                            <option value="23">感想数(少ない順)   </option>
+                            <option value="24">話数(多い順)</option>
+                            <option value="25">話数(少ない順)</option>
+                            <option value="26">中央値(高い順)</option>
+                            <option value="27">中央値(低い順) </option>
+                            <option value="29">日間総合評価</option>
+                            <option value="30">週間総合評価</option>
+                            <option value="31">月間総合評価</option>
+                            <option value="32">四半期総合評価</option>
+                            <option value="33">年間総合評価</option>
+                            <option value="34">Wilson Score Interval</option>
+                            <option value="35">相対評価</option>
+                            <option value="36">ピックアップ(総合評価/UA)</option>
+                            <option value="37">ランダム</option>
+                        </select>
+                        <span class="select-arrow">▼</span>
+                    </div>
+                </div>
                     <div class="d-grid">
                         <button type="submit" class="btn btn-primary" id="search-btn">検索</button>
                     </div>
@@ -180,6 +259,7 @@
      document.getElementById('search-form').addEventListener('submit', function(e) {
             e.preventDefault();
             var word = document.getElementById('word').value;
+            var type = document.getElementById('type').value;
             var searchResult = document.getElementById('search-result');
             var searchResultContent = document.querySelector('.search-result');
             var searchBtn = document.getElementById('search-btn');
@@ -192,7 +272,7 @@
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: 'word=' + encodeURIComponent(word)
+                body: 'word=' + encodeURIComponent(word) + '&type=' + encodeURIComponent(type)
             })
             .then(response => response.json())
             .then(data => {
