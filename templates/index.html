@@ -95,34 +95,29 @@
             outline: none;
             box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
         }
-        .checkbox {
-            position: relative;
-            display: inline-block;
+        .form-switch .form-check-input {
+            width: 3em;
+            height: 1.5em;
+            margin-top: 0.25em;
+            background-color: rgba(0, 0, 0, 0.1);
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='rgba(0, 0, 0, 0.25)'/%3e%3c/svg%3e");
+            background-position: left center;
+            border-radius: 2em;
+            transition: background-position .15s ease-in-out;
         }
-        .custom-checkbox {
-            display: none;
+        .form-switch .form-check-input:checked {
+            background-color: #007bff;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
+            background-position: right center;
         }
-        .checkbox label {
-            cursor: pointer;
-            position: relative;
-            width: 24px;
-            height: 24px;
-            display: inline-block;
-            border: 2px solid #007bff;
-            border-radius: 4px;
-            transition: all 0.3s ease;
+        .form-switch .form-check-input:focus {
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+            border-color: #007bff;
         }
-        .custom-checkbox:checked + label:before {
-            background: #007bff;
-        }
-        .custom-checkbox:checked + label:after {
-            content: '\2714';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #fff;
-            font-size: 16px;
+        .form-check-label {
+            margin-left: 0.5em;
+            font-weight: 500;
+            color: #495057;
         }
     </style>
 </head>
@@ -160,12 +155,9 @@
                         <div class="form-text">小説を検索してURLを取得します。</div>
                     </div>
                     
-                    <div class="mb-3">
-                        <label for="r18" class="form-label">R18</label>
-                        <div class="checkbox">
-                            <input type="checkbox" id="r18" name="r18" class="custom-checkbox">
-                            <label for="r18"></label>
-                        </div>
+                    <div class="mb-3 form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="r18" role="switch">
+                        <label class="form-check-label" for="r18">R18</label>
                     </div>
 
                     <div class="mb-3">
