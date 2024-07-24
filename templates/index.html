@@ -95,6 +95,41 @@
             outline: none;
             box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
         }
+        .checkbox {
+            position: relative;
+            display: inline-block;
+        }
+        .custom-checkbox {
+            display: none;
+        }
+        .checkbox label {
+            cursor: pointer;
+            position: relative;
+            padding-left: 30px;
+        }
+        .checkbox label:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #007bff;
+            background: #fff;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+        .custom-checkbox:checked + label:before {
+            background: #007bff;
+        }
+        .custom-checkbox:checked + label:after {
+            content: '\2714';
+            position: absolute;
+            top: 0;
+            left: 4px;
+            color: #fff;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
@@ -129,6 +164,14 @@
                         <label for="word" class="form-label">キーワード:</label>
                         <input type="text" class="form-control" id="word" name="word" placeholder="検索ワードを入力...">
                         <div class="form-text">小説を検索してURLを取得します。</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="r18" class="form-label">R18</label>
+                        <div class="checkbox">
+                            <input type="checkbox" id="r18" name="r18" class="custom-checkbox">
+                            <label for="r18"></label>
+                        </div>
                     </div>
 
                     <div class="mb-3">
@@ -400,6 +443,7 @@
      document.getElementById('search-form').addEventListener('submit', function(e) {
             e.preventDefault();
             var word = document.getElementById('word').value;
+            var checkedR18 = r18 ? "mode=search_r18" : "mode=search";
             var parody = document.getElementById('parody').value;
             var type = document.getElementById('type').value;
             var searchResult = document.getElementById('search-result');
@@ -414,7 +458,7 @@
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: 'word=' + encodeURIComponent(word) + '&parody=' + encodeURIComponent(parody) + '&type=' + encodeURIComponent(type)
+                body: 'word=' + encodeURIComponent(word) + '&parody=' + encodeURIComponent(parody) + '&type=' + encodeURIComponent(type) + '&' + checkedR18
             })
             .then(response => response.json())
             .then(data => {
