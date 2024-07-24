@@ -117,21 +117,30 @@ def download_novel(nid):
 
 @app.route('/search', methods=['POST'])
 def search():
-    word = request.form['word']
-    checkedR18 = request.form['mode']
-    parody = request.form['parody']
-    type_value = request.form['type']
-    mozi2, mozi1 = request.form['mozi2'], request.form['mozi1']
-    mozi2_all, mozi1_all = request.form['mozi2_all'], request.form['mozi1_all']
-    rate2, rate1 = request.form['rate2'], request.form['rate1']
-    soupt2, soupt1 = request.form['soupt2'], request.form['soupt1']
-    f2, f1 = request.form['f2'], request.form['f1']
-    re2, re1 = request.form['re2'], request.form['re1']
-    v2, v1 = request.form['v2'], request.form['v1']
-    r2, r1 = request.form['r2'], request.form['r1']
-    t2, t1 = request.form['t2'], request.form['t1']
+    word = request.form.get('word', '')
+    checkedR18 = request.form.get('mode', 'search')
+    parody = request.form.get('parody', '')
+    type_value = request.form.get('type', '0')
 
-    url = f"https://syosetu.org/search/?mode={checkedR18}&word={word}&gensaku={parody}&type={type_value}&mozi2={mozi2}&mozi1={mozi1}&mozi2_all={mozi2_all}&mozi1_all={mozi1_all}&rate2={rate2}&rate1={rate1}&soupt2={soupt2}&soupt1={soupt1}&f2={f2}&f1={f1}&re2={re2}&re1={re1}&v2={v2}&v1={v1}&r2={r2}&r1={r1}&t2={t2}&t1={t1}"
+    filter_params = ['mozi2', 'mozi1', 'mozi2_all', 'mozi1_all', 'rate2', 'rate1', 
+                     'soupt2', 'soupt1', 'f2', 'f1', 're2', 're1', 'v2', 'v1', 
+                     'r2', 'r1', 't2', 't1']
+
+    url_params = {
+        'mode': checkedR18,
+        'word': word,
+        'gensaku': parody,
+        'type': type_value
+    }
+
+    for param in filter_params:
+        value = request.form.get(param)
+        if value:
+            url_params[param] = value
+
+    base_url = "https://syosetu.org/search/"
+    url = f"{base_url}?{urlencode(url_params)}"
+
     headers = {
         "User-Agent": get_random_user_agent(),
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
