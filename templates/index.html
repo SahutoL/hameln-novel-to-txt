@@ -211,7 +211,7 @@
                     icon.className = 'fa-regular fa-pen-to-square link-input-icon';
                     icon.setAttribute('data-link', result.link);
                     icon.addEventListener('click', function() {
-                        document.getElementById('nid').value = this.getAttribute('data-link');
+                        document.getElementById('nid').value = `https:${this.getAttribute('data-link')}`;
                     });
                     listItem.appendChild(link);
                     listItem.appendChild(icon);
