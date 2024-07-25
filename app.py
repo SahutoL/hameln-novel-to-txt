@@ -37,10 +37,11 @@ def get_chapter_text(session, url, headers, retry_count=3):
             response = session.get(url, headers=headers, cookies={'over18':'off'})
             soup = BeautifulSoup(response.text, "html.parser")
             chapter_text = '\n'.join(p.text for p in soup.find(id='honbun').find_all('p'))
+            sleep(random.uniform(2,4))
             return chapter_text
         except Exception as e:
             print(f"Error fetching {url}: {str(e)}. Retrying...")
-            sleep(1)
+            sleep(random.uniform(2,4))
     return ""
 
 def get_novel_txt(novel_url: str, nid: str):
@@ -90,7 +91,6 @@ def start_scraping():
         nid = match.group(1)
         novel_url = f"https://syosetu.org/novel/{nid}/"
         try:
-            # Start the scraping process in a background thread
             task = threading.Thread(target=start_scraping_task, args=(novel_url, nid))
             task.start()
             background_tasks[nid] = task
