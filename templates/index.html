@@ -24,12 +24,15 @@
             margin-bottom: 7%;
         }
         .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
+            background-color: #4a90e2;
+            border-color: #4a90e2;
+            transition: all 0.3s ease;
         }
         .btn-primary:hover {
-            background-color: #0056b3;
-            border-color: #0056b3;
+            background-color: #3a7bc8;
+            border-color: #3a7bc8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(74, 144, 226, 0.3);
         }
         .form-text {
             color: #6c757d;
@@ -39,50 +42,64 @@
         }
         .search-result-item {
             background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            margin-bottom: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
             transition: all 0.3s ease;
             overflow: hidden;
         }
         .search-result-item:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transform: translateY(-5px);
+            box-shadow: 0 6px 25px rgba(0,0,0,0.12);
         }
         .search-result-header {
-            padding: 15px;
+            padding: 20px;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background-color: #f8f9fa;
         }
         .search-result-header h3 {
             margin: 0;
-            font-size: 1.0rem;
+            font-size: 1.1rem;
             color: #333;
+            font-weight: 600;
         }
         .search-result-content {
-            padding: 0 15px;
+            padding: 0 20px;
             max-height: 0;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             overflow: hidden;
-            transition: max-height 0.3s ease;
+            transition: all 0.3s ease;
         }
         .search-result-content.active {
             max-height: 500px;
-            padding-bottom: 15px;
+            padding-top: 10px;
+            padding-bottom: 20px;
         }
-        .read-button {
-            margin-top: 10px;
+        .search-result-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
         }
-        .link-input-icon {
-            cursor: pointer;
+        .read-button, .input-url-button {
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+        .input-url-button {
+            background-color: #f8f9fa;
+            border: 1px solid #4a90e2;
             color: #4a90e2;
-            margin-left: 10px;
-            transition: color 0.3s ease;
         }
-        .link-input-icon:hover {
-            color: #3a7bc8;
+        .input-url-button:hover {
+            background-color: #4a90e2;
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(74, 144, 226, 0.3);
         }
         .select-wrapper {
             position: relative;
@@ -636,16 +653,14 @@
                         <p><strong>作者:</strong> ${result.author}</p>
                         <p><strong>原作:</strong> ${result.parody}</p>
                         <p><strong>説明:</strong> ${result.description}</p>
-                        <button class="btn btn-primary btn-sm read-button">小説を読む</button>
+                        <div class="search-result-actions">
+                             <button class="btn btn-primary btn-sm read-button">小説を読む</button>
+                             <button class="btn btn-sm input-url-button" data-link="${result.link}">小説URLに入力</button>
+                         </div>
                     `;
-                    
-                    var icon = document.createElement('i');
-                    icon.className = 'fa-regular fa-pen-to-square link-input-icon';
-                    icon.setAttribute('data-link', result.link);
                     
                     listItem.appendChild(header);
                     listItem.appendChild(content);
-                    listItem.appendChild(icon);
                     
                     header.addEventListener('click', function() {
                         content.classList.toggle('active');
@@ -656,7 +671,7 @@
                         window.open(`https:${result.link}`, '_blank');
                     });
                     
-                    icon.addEventListener('click', function() {
+                    content.querySelector('.input-url-button').addEventListener('click', function() {
                         document.getElementById('nid').value = `https:${this.getAttribute('data-link')}`;
                     });
                     
