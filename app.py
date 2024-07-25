@@ -26,32 +26,42 @@ def get_random_user_agent():
     user_agents = [
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Safari/605.1.15",
-        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36"
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:89.0) Gecko/20100101 Firefox/89.0"
     ]
     return random.choice(user_agents)
 
+def get_random_delay():
+    return random.uniform(3, 7)
 
 def get_chapter_text(session, url, headers, retry_count=3):
     for _ in range(retry_count):
         try:
+            sleep(get_random_delay())
             response = session.get(url, headers=headers, cookies={'over18':'off'})
             soup = BeautifulSoup(response.text, "html.parser")
             chapter_text = '\n'.join(p.text for p in soup.find(id='honbun').find_all('p'))
-            sleep(random.uniform(2,4))
             return chapter_text
         except Exception as e:
             print(f"Error fetching {url}: {str(e)}. Retrying...")
-            sleep(random.uniform(2,4))
+            sleep(get_random_delay())
     return ""
+
 
 def get_novel_txt(novel_url: str, nid: str):
     novel_url = novel_url.rstrip('/') + '/'
     headers = {
         "User-Agent": get_random_user_agent(),
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+        "Accept-Language": "ja-JP,ja;q=0.9",
+        "Referer": "https://www.google.com/",
+        "DNT": "1",
+        "Upgrade-Insecure-Requests": "1"
     }
 
     with get_session() as session:
+        sleep(get_random_delay())
         response = session.get(novel_url, headers=headers, cookies={'over18':'off'})
         soup = BeautifulSoup(response.text, "html.parser")
         title = soup.find('div', class_='ss').find('span', attrs={'itemprop':'name'}).text
@@ -59,7 +69,7 @@ def get_novel_txt(novel_url: str, nid: str):
 
         txt_data = [None] * chapter_count
 
-        with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
             future_to_url = {executor.submit(get_chapter_text, session, f'{novel_url}{i+1}.html', headers): i for i in range(chapter_count)}
             for future in concurrent.futures.as_completed(future_to_url):
                 chapter_num = future_to_url[future] + 1
@@ -145,9 +155,14 @@ def search():
     headers = {
         "User-Agent": get_random_user_agent(),
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+        "Accept-Language": "ja-JP,ja;q=0.9",
+        "Referer": "https://www.google.com/",
+        "DNT": "1",
+        "Upgrade-Insecure-Requests": "1"
     }
     with get_session() as session:
         try:
+            sleep(get_random_delay())
             response = session.get(url, headers=headers, cookies={'over18':'off', 'list_num':'50'})
             soup = BeautifulSoup(response.text, 'html.parser')
             novels = soup.find_all('div', class_='section3')
