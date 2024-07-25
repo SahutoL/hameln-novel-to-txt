@@ -541,7 +541,7 @@
                  if (data.progress < 100) {
                      setTimeout(() => checkProgress(nid), 1000);
                  } else {
-                     window.location.href = `/download/${nid}`;
+                     window.open(`/download/${nid}`, '_blank');
                      document.getElementById('submit-btn').disabled = false;
                  }
              })
