@@ -503,9 +503,10 @@
          var progressBar = document.getElementById('progress-bar');
          var errorMessage = document.getElementById('error-message');
         
-         if (document.getElementById('download-container')) {
-            document.getElementById('download-container').remove();
-         }
+         const downloadContainer = document.getElementById('download-container');
+        if (downloadContainer) {
+            downloadContainer.remove();
+        }
 
          submitBtn.disabled = true;
          progressBar.style.display = 'block';
