@@ -56,7 +56,7 @@ def get_novel_txt(novel_url: str, nid: str):
         title = soup.find('div', class_='ss').find('span', attrs={'itemprop':'name'}).text
         chapter_count = len(soup.select('a[href^="./"]'))
 
-        txt_data = []
+        txt_data = [None] * chapter_count
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
             future_to_url = {executor.submit(get_chapter_text, session, f'{novel_url}{i+1}.html', headers): i for i in range(chapter_count)}
@@ -64,12 +64,12 @@ def get_novel_txt(novel_url: str, nid: str):
                 chapter_num = future_to_url[future] + 1
                 try:
                     chapter_text = future.result()
-                    txt_data.append(chapter_text)
+                    txt_data[chapter_num] = chapter_text
                     progress_store[nid] = int((chapter_num / chapter_count) * 100)
                 except Exception as exc:
                     print(f'Chapter {chapter_num} generated an exception: {exc}')
 
-        novel_text = '\n\n'.join(txt_data)
+        novel_text = '\n\n'.join(filter(None, txt_data))
         novel_store[nid] = [novel_text, title]
         progress_store[nid] = 100
 
