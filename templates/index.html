@@ -651,9 +651,9 @@
                     var content = document.createElement('div');
                     content.className = 'search-result-content';
                     content.innerHTML = `
-                        <p><strong>作者:</strong> ${result.author}</p>
-                        <p><strong>原作:</strong> ${result.parody}</p>
-                        <p><strong>説明:</strong> ${result.description}</p>
+                        <p><span style="opacity:0.70">作者:</span> ${result.author}</p>
+                        <p><span style="opacity:0.70">原作:</span> ${result.parody}</p>
+                        <p><span style="opacity:0.70">説明:</span> ${result.description}</p>
                         <div class="search-result-actions">
                              <button class="btn btn-primary btn-sm read-button">小説を読む</button>
                              <button class="btn btn-sm input-url-button" data-link="${result.link}">小説URLに入力</button>
