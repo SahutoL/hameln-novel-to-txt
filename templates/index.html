@@ -542,6 +542,8 @@
                  if (data.progress < 100) {
                      setTimeout(() => checkProgress(nid), 1000);
                  } else {
+                     progressBar.style.width = '0%';
+                     progressBar.textContent = '';
                      showDownloadLink(nid);
                     document.getElementById('submit-btn').disabled = false;
                  }
@@ -556,6 +558,7 @@
         downloadLink.textContent = 'ダウンロード';
         downloadLink.className = 'btn btn-success mt-3';
         downloadLink.target = '_blank';
+        downloadLink.style.textAlign = 'center';
     
         var container = document.querySelector('.card-body');
         container.appendChild(downloadLink);
