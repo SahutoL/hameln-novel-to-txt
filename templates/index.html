@@ -43,47 +43,47 @@
         .search-result-item {
             background-color: #ffffff;
             border-radius: 12px;
-            box-shadow: 0 6px 24px rgba(0,0,0,0.15);
-            margin-bottom: 20px;
-            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 16px;
+            transition: all 0.2s ease;
             overflow: hidden;
         }
         .search-result-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
         .search-result-header {
-            padding: 20px;
+            padding: 16px;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
             background-color: #f8f9fa;
-            border-bottom: 1px solid rgba(0,0,0,0.1);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
         }
         .search-result-header h3 {
             margin: 0;
-            font-size: 0.95rem;
+            font-size: 1rem;
             color: #333;
-            font-weight: 600;
+            font-weight: 500;
         }
         .search-result-content {
-            padding: 0 20px;
+            padding: 0 16px;
             max-height: 0;
             font-size: 0.9rem;
             overflow: hidden;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
         .search-result-content.active {
             max-height: 500px;
-            padding-top: 10px;
-            padding-bottom: 20px;
+            padding-top: 12px;
+            padding-bottom: 16px;
         }
         .search-result-actions {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-start;
             align-items: center;
-            margin-top: 15px;
+            margin-top: 12px;
+            gap: 8px;
         }
         .read-button, .input-url-button {
             padding: 8px 15px;
@@ -97,8 +97,10 @@
             color: #4a90e2;
         }
         .input-url-button:hover {
+            <!--
             background-color: #4a90e2;
             color: #ffffff;
+            -->
             transform: translateY(-2px);
             box-shadow: 0 4px 10px rgba(74, 144, 226, 0.3);
         }
@@ -651,13 +653,13 @@
                     var content = document.createElement('div');
                     content.className = 'search-result-content';
                     content.innerHTML = `
-                        <p><span style="opacity:0.70">作者:</span> ${result.author}</p>
-                        <p><span style="opacity:0.70">原作:</span> ${result.parody}</p>
-                        <p><span style="opacity:0.70">説明:</span> ${result.description}</p>
+                        <p><strong>作者:</strong> ${result.author}</p>
+                        <p><strong>原作:</strong> ${result.parody}</p>
+                        <p><strong>説明:</strong> ${result.description}</p>
                         <div class="search-result-actions">
-                             <button class="btn btn-primary btn-sm read-button">小説を読む</button>
-                             <button class="btn btn-sm input-url-button" data-link="${result.link}">小説URLに入力</button>
-                         </div>
+                            <button class="btn btn-primary btn-sm read-button">小説を読む</button>
+                            <button class="btn btn-sm input-url-button" data-link="${result.link}">小説URLに入力</button>
+                        </div>
                     `;
                     
                     listItem.appendChild(header);
