@@ -187,5 +187,9 @@ def manifest():
 def service_worker():
     return send_from_directory('static', 'service-worker.js')
 
+@app.route('/sitemap.xml')
+def sitemap():
+    return send_from_directory('static', 'sitemap.xml')
+
 if __name__ == '__main__':
     app.run(debug=False)
