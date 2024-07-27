@@ -122,6 +122,35 @@
             background-color: #f1c40f;
             color: #34495e;
         }
+        .tags-container {
+            margin-top: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .tag {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .tag:hover {
+            transform: translateY(-2px);
+        }
+        .tag-keyword {
+            background-color: #e0f2f1;
+            color: #009688;
+        }
+        .tag-alert {
+            background-color: #fff3e0;
+            color: #ff9800;
+        }
+        .tags-title {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
         .search-result-actions {
             display: flex;
             justify-content: flex-start;
@@ -743,6 +772,10 @@
                     
                     var content = document.createElement('div');
                     content.className = 'search-result-content';
+                    
+                    const createTags = (tags, className) => {
+                        return tags.map(tag => `<span class="tag ${className}">${tag}</span>`).join('');
+                    };
                     content.innerHTML = `
                         <div class="info-grid">
                             <div class="info-item">
@@ -758,6 +791,10 @@
                                 <span>${result.latest}</span>
                             </div>
                             <div class="info-item">
+                                <strong>更新日時</strong>
+                                <span>${result.updated_day}</span>
+                            </div>
+                            <div class="info-item">
                                 <strong>総文字数</strong>
                                 <span>${result.words}</span>
                             </div>
@@ -765,6 +802,18 @@
                         <div class="description">
                             <p>${result.description}</p>
                         </div>
+                        <div class="tags-container">
+                            <div>
+                                <div class="tags-title">警告タグ</div>
+                                ${createTags(result.alert_keywords, 'tag-alert')}
+                                </div>
+                            </div>
+                        <div class="tags-container">
+                            <div>
+                                <div class="tags-title">タグ</div>
+                                ${createTags(result.keywords, 'tag-keyword')}
+                                </div>
+                            </div>
                         <div class="search-result-actions">
                             <button class="btn btn-primary read-button">小説を読む</button>
                             <button class="btn btn-secondary input-url-button" data-link="${result.link}">小説URLに入力</button>
