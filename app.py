@@ -71,12 +71,14 @@ def get_novel_txt(novel_url: str, nid: str):
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
             future_to_url = {executor.submit(get_chapter_text, session, f'{novel_url}{i+1}.html', headers): i for i in range(chapter_count)}
+            completed_chapters = 0
             for future in concurrent.futures.as_completed(future_to_url):
                 chapter_num = future_to_url[future] + 1
                 try:
                     chapter_text = future.result()
                     txt_data[chapter_num] = chapter_text
-                    progress_store[nid] = int((chapter_num / chapter_count) * 100)
+                    completed_chapters += 1
+                     progress_store[nid] = int((completed_chapters / chapter_count) * 100)
                 except Exception as exc:
                     print(f'Chapter {chapter_num} generated an exception: {exc}')
 
