@@ -7,9 +7,10 @@
 [こちら](https://hameln-novel-to-txt.onrender.com)から実際のサイトを訪れることができます。
 
 ### 画像
-<img src="https://github.com/user-attachments/assets/aa2bd87c-8286-4ced-aa1d-e7d51640c864" width="50%" height="50%" />
-<img src="https://github.com/user-attachments/assets/fa0bca4d-235e-4fd2-b94f-4a2dbc5e7df3" width="50%" height="50%" />
-<img src="https://github.com/user-attachments/assets/66719511-ddc6-44fa-ad56-b6c0af8eac09" width="50%" height="50%" />
+<img src="https://github.com/user-attachments/assets/60880d70-1247-4144-abce-3d771f222104" width="50%" height="50%" />
+<img src="https://github.com/user-attachments/assets/ecb3ac51-76b3-4479-91dd-da12d208dac8" width="50%" height="50%" />
+<img src="https://github.com/user-attachments/assets/bb37d8dd-3443-47bd-8465-2c750c3ba5ad" width="50%" height="50%" />
+<img src="https://github.com/user-attachments/assets/c8b28918-43f2-4dab-a0d7-3c90d6f09c70" width="50%" height="50%" />
 
 ## 機能
 
