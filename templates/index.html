@@ -96,6 +96,25 @@
             margin-right: 10px;
         }
         .badge-status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+        .badge-status-短編 {
+            background-color: #3498db;
+            color: white;
+        }
+        .badge-status-連載 {
+            background-color: #2ecc71;
+            color: white;
+        }
+        .badge-status-未完 {
+            background-color: #f39c12;
+            color: white;
+        }
+        .badge-status-完結 {
             background-color: #e74c3c;
             color: white;
         }
@@ -728,7 +747,7 @@
                     header.innerHTML = `
                         <div>
                             <h3>${result.title}</h3>
-                            <span class="badge badge-status">${result.status}</span>
+                            <span class="badge badge-status badge-status-${result.status}">${result.status}</span>
                             <span class="badge badge-evaluation">評価 ${result.evaluation}</span>
                         </div>
                         <i class="fas fa-chevron-down"></i>
