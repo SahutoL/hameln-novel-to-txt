@@ -176,7 +176,21 @@ def search():
                 author = novel.find_all('a')[2].text
                 parody = novel.find_all('a')[1].text
                 description = novel.find('div', class_='blo_inword').text
-                results.append({'title': title, 'link': link, 'author': author, 'parody': parody, 'description': description})
+                status = novel.find('div', class_='blo_wasuu_base').find('span').text
+                latest = novel.find('a', attrs={'title':'最新話へのリンク'}).text
+                words = novel.find('div', attrs={'title': '総文字数'}).text[2:-2]
+                evaluation = novel.find('div', class_='blo_hyouka').text.replace('\u3000','')[5:]
+                results.append({
+                    'title': title,
+                    'link': link,
+                    'author': author,
+                    'parody': parody,
+                    'description': description,
+                    'status': status,
+                    'latest': latest,
+                    'words': words,
+                    'evaluation': evaluation
+                })
             return jsonify({'results': results})
         except Exception as e:
             return jsonify({'error': str(e)}), 500
