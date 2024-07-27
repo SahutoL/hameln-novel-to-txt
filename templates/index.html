@@ -61,7 +61,7 @@
             transition: max-height 0.3s ease, padding 0.3s ease;
         }
         .search-result-content.active {
-            max-height: 1000px;
+            max-height: 10%;
             padding-top: 20px;
             padding-bottom: 25px;
         }
@@ -802,18 +802,22 @@
                         <div class="description">
                             <p>${result.description}</p>
                         </div>
-                        <div class="tags-container">
-                            <div>
-                                <div class="tags-title">警告タグ</div>
-                                ${createTags(result.alert_keywords, 'tag-alert')}
+                        ${result.alert_keywords && result.alert_keywords.length > 0 ? `
+                            <div class="tags-container">
+                                <div>
+                                    <div class="tags-title">警告タグ</div>
+                                    ${createTags(result.alert_keywords, 'tag-alert')}
                                 </div>
                             </div>
-                        <div class="tags-container">
-                            <div>
-                                <div class="tags-title">タグ</div>
-                                ${createTags(result.keywords, 'tag-keyword')}
+                        ` : ''}
+                        ${result.keywords && result.keywords.length > 0 ? `
+                            <div class="tags-container">
+                                <div>
+                                    <div class="tags-title">タグ</div>
+                                    ${createTags(result.keywords, 'tag-keywords')}
                                 </div>
                             </div>
+                        ` : ''}
                         <div class="search-result-actions">
                             <button class="btn btn-primary read-button">小説を読む</button>
                             <button class="btn btn-secondary input-url-button" data-link="${result.link}">小説URLに入力</button>
