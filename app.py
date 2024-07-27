@@ -191,7 +191,7 @@ def search():
                     'description': description,
                     'status': status,
                     'latest': latest,
-                    'updated_day': updated_day,
+                    'updated_day': f'{updated_day[:10]} {updated_day[10:]}',
                     'words': words,
                     'evaluation': evaluation,
                     'alert_keywords': alert_keywords,
