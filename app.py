@@ -178,8 +178,11 @@ def search():
                 description = novel.find('div', class_='blo_inword').text
                 status = novel.find('div', class_='blo_wasuu_base').find('span').text
                 latest = novel.find('a', attrs={'title':'最新話へのリンク'}).text
+                updated_day = novel.find('div', attrs={'title':'最終更新日'}).text
                 words = novel.find('div', attrs={'title': '総文字数'}).text[2:-2]
                 evaluation = novel.find('div', class_='blo_hyouka').text.replace('\u3000','')[5:]
+                alert_keywords = [x.text for x in novel.find('div', class_='all_keyword').find('span').find_all('a')]
+                keywords = list(filter(lambda x: x not in alert_keywords, [x.text for x in novel.find('div', class_='all_keyword').find_all('a')]))
                 results.append({
                     'title': title,
                     'link': link,
@@ -188,8 +191,11 @@ def search():
                     'description': description,
                     'status': status,
                     'latest': latest,
+                    'updated_day': updated_day,
                     'words': words,
-                    'evaluation': evaluation
+                    'evaluation': evaluation,
+                    'alert_keywords': alert_keywords,
+                    'keywords': keywords
                 })
             return jsonify({'results': results})
         except Exception as e:
