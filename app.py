@@ -78,7 +78,7 @@ def get_novel_txt(novel_url: str, nid: str):
                     chapter_text = future.result()
                     txt_data[chapter_num] = chapter_text
                     completed_chapters += 1
-                     progress_store[nid] = int((completed_chapters / chapter_count) * 100)
+                    progress_store[nid] = int((completed_chapters / chapter_count) * 100)
                 except Exception as exc:
                     print(f'Chapter {chapter_num} generated an exception: {exc}')
 
