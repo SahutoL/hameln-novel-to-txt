@@ -91,6 +91,36 @@ def start_scraping_task(url, nid):
     if nid in background_tasks:
         del background_tasks[nid]
 
+def parse_novel(novel):
+    title = novel.find('a').text
+    link = novel.find('a').get('href')
+    author = novel.find_all('a')[2].text
+    parody = novel.find_all('a')[1].text
+    description = novel.find('div', class_='blo_inword').text
+    status = novel.find('div', class_='blo_wasuu_base').find('span').text
+    latest = novel.find('a', attrs={'title':'最新話へのリンク'}).text
+    updated_day = novel.find('div', attrs={'title':'最終更新日'}).text
+    words = re.search(r'\d+', novel.find('div', attrs={'title': '総文字数'}).text).group()
+    evaluation = novel.find('div', class_='blo_hyouka').text.strip()[5:]
+    all_keywords = novel.find('div', class_='all_keyword').find_all('a')
+    alert_keywords = [x.text for x in novel.find('div', class_='all_keyword').find('span').find_all('a')]
+    keywords = [x.text for x in all_keywords if x.text not in alert_keywords]
+    
+    return {
+        'title': title,
+        'link': link,
+        'author': author,
+        'parody': parody,
+        'description': description,
+        'status': status,
+        'latest': latest,
+        'updated_day': f'{updated_day[:10]} {updated_day[10:]}',
+        'words': words,
+        'evaluation': evaluation,
+        'alert_keywords': alert_keywords,
+        'keywords': keywords
+    }
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     return render_template('index.html')
@@ -169,7 +199,14 @@ def search():
             soup = BeautifulSoup(response.text, 'html.parser')
             novels = soup.find_all('div', class_='section3')
 
-            results = []
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                future_to_index = {executor.submit(parse_novel, novel): i for i, novel in enumerate(novels)}
+                results = [None] * len(novels)
+                
+                for future in concurrent.futures.as_completed(future_to_index):
+                    index = future_to_index[future]
+                    results[index] = future.result()
+            """
             for novel in novels:
                 title = novel.find('a').text
                 link = novel.find('a').get('href')
@@ -197,6 +234,7 @@ def search():
                     'alert_keywords': alert_keywords,
                     'keywords': keywords
                 })
+            """
             return jsonify({'results': results})
         except Exception as e:
             return jsonify({'error': str(e)}), 500
