@@ -868,9 +868,11 @@
             ];
             
             filterParams.forEach(function(param) {
-                var value = document.querySelector(`input[name="${param}"]`).value;
-                if (value) {
-                    bodyParams.append(param, value);
+                var filterParam = document.querySelector(`input[name="${param}"]`);
+                if (filterParam.value) {
+                    bodyParams.append(param, filterParam.value);
+                } else if (filterParam && filterParam.checked) {
+                     bodyParams.append(param, "1");
                 }
             });
 
