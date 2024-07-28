@@ -868,11 +868,15 @@
             ];
             
             filterParams.forEach(function(param) {
-                var filterParam = document.querySelector(`input[name="${param}"]`);
-                if (filterParam.value) {
-                    bodyParams.append(param, filterParam.value);
-                } else if (filterParam && filterParam.checked) {
-                    bodyParams.append(param, "1");
+                const filterParam = document.querySelector(`input[name="${param}"]`);
+                if (filterParam) {
+                    if (filterParam.type === 'checkbox') {
+                        if (filterParam.checked) {
+                            bodyParams.append(param, "1");
+                        }
+                    } else if (filterParam.value) {
+                        bodyParams.append(param, filterParam.value);
+                    }
                 }
             });
 
