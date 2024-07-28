@@ -33,7 +33,7 @@ def get_random_user_agent():
     return random.choice(user_agents)
 
 def get_random_delay():
-    return random.uniform(3, 7)
+    return random.uniform(3, 6)
 
 def get_chapter_text(session, url, headers, retry_count=3):
     for _ in range(retry_count):
@@ -194,7 +194,7 @@ def search():
     }
     with get_session() as session:
         try:
-            sleep(get_random_delay())
+            sleep(random.uniform(2,4))
             response = session.get(url, headers=headers, cookies={'over18':'off', 'list_num':'50'})
             soup = BeautifulSoup(response.text, 'html.parser')
             novels = soup.find_all('div', class_='section3')
@@ -206,35 +206,7 @@ def search():
                 for future in concurrent.futures.as_completed(future_to_index):
                     index = future_to_index[future]
                     results[index] = future.result()
-            """
-            for novel in novels:
-                title = novel.find('a').text
-                link = novel.find('a').get('href')
-                author = novel.find_all('a')[2].text
-                parody = novel.find_all('a')[1].text
-                description = novel.find('div', class_='blo_inword').text
-                status = novel.find('div', class_='blo_wasuu_base').find('span').text
-                latest = novel.find('a', attrs={'title':'最新話へのリンク'}).text
-                updated_day = novel.find('div', attrs={'title':'最終更新日'}).text
-                words = novel.find('div', attrs={'title': '総文字数'}).text[2:-2]
-                evaluation = novel.find('div', class_='blo_hyouka').text.replace('\u3000','')[5:]
-                alert_keywords = [x.text for x in novel.find('div', class_='all_keyword').find('span').find_all('a')]
-                keywords = list(filter(lambda x: x not in alert_keywords, [x.text for x in novel.find('div', class_='all_keyword').find_all('a')]))
-                results.append({
-                    'title': title,
-                    'link': link,
-                    'author': author,
-                    'parody': parody,
-                    'description': description,
-                    'status': status,
-                    'latest': latest,
-                    'updated_day': f'{updated_day[:10]} {updated_day[10:]}',
-                    'words': words,
-                    'evaluation': evaluation,
-                    'alert_keywords': alert_keywords,
-                    'keywords': keywords
-                })
-            """
+
             return jsonify({'results': results})
         except Exception as e:
             return jsonify({'error': str(e)}), 500
