@@ -165,7 +165,7 @@ def search():
     parody = request.form.get('parody', '')
     type_value = request.form.get('type', '0')
 
-    filter_params = ['mozi2', 'mozi1', 'mozi2_all', 'mozi1_all', 'rate2', 'rate1', 
+    filter_params = ['rensai_s1', 'rensai_s2', 'rensai_s4', 'mozi2', 'mozi1', 'mozi2_all', 'mozi1_all', 'rate2', 'rate1', 
                      'soupt2', 'soupt1', 'f2', 'f1', 're2', 're1', 'v2', 'v1', 
                      'r2', 'r1', 't2', 't1']
 
