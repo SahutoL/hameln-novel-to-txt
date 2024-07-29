@@ -100,7 +100,7 @@ def parse_novel(novel):
     status = novel.find('div', class_='blo_wasuu_base').find('span').text
     latest = novel.find('a', attrs={'title':'最新話へのリンク'}).text
     updated_day = novel.find('div', attrs={'title':'最終更新日'}).text
-    words = re.search(r'\d+', novel.find('div', attrs={'title': '総文字数'}).text).group()
+    words = novel.find('div', attrs={'title': '総文字数'}).text.split(' ')[1]
     evaluation = novel.find('div', class_='blo_hyouka').text.strip()[5:]
     all_keywords = novel.find('div', class_='all_keyword').find_all('a')
     alert_keywords = [x.text for x in novel.find('div', class_='all_keyword').find('span').find_all('a')]
