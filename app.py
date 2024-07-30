@@ -129,8 +129,8 @@ def parse_novel(novel):
     all_keywords = novel.find('div', class_='all_keyword').find_all('a')
     alert_keywords = [x.text for x in novel.find('div', class_='all_keyword').find('span').find_all('a')]
     keywords = [x.text for x in all_keywords if x.text not in alert_keywords]
-    favs = novel.find_all('div', attrs={'style': 'background-color: transparent;'})[-1].text.split('|')[0][6:]
-    
+    favs = re.search(r'お気に入り：(\d+)', novel.find_all('div', attrs={'style': 'background-color: transparent;'})
+
     return {
         'title': title,
         'link': link,
