@@ -124,6 +124,10 @@
             background-color: #f1c40f;
             color: #34495e;
         }
+        .badge-favs {
+            background-color: #ff69b4;
+            color: white
+        }
         .tags-container {
             margin-top: 15px;
             display: flex;
@@ -904,6 +908,7 @@
                             <h3>${result.title}</h3>
                             <span class="badge badge-status badge-status-${result.status}">${result.status}</span>
                             <span class="badge badge-evaluation">評価 ${result.evaluation}</span>
+                            <span class="badge badge-favs">お気に入り ${result.favs}</span>
                         </div>
                         <i class="fas fa-chevron-down"></i>
                     `;
