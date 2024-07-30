@@ -117,8 +117,9 @@ def start_scraping_task(url, nid):
 def parse_novel(novel):
     title = novel.find('a').text
     link = novel.find('a').get('href')
-    author = novel.find_all('a')[2].text
-    parody = novel.find_all('a')[1].text
+    author_info = novel.find_all('div', class_='blo_title_sak')[-1].text.split('\n')
+    author = author_info[2][2:]
+    parody = author_info[1].replace('原作：','')
     description = novel.find('div', class_='blo_inword').text
     status = novel.find('div', class_='blo_wasuu_base').find('span').text
     latest = novel.find('a', attrs={'title':'最新話へのリンク'}).text
