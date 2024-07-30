@@ -6,7 +6,7 @@ from urllib.parse import urlencode
 from bs4 import BeautifulSoup
 import concurrent.futures
 from time import sleep
-import threading, io, re, random
+import threading, io, os, re, random
 from sqlalchemy import create_engine, Column, Integer, String, Text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
