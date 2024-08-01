@@ -729,6 +729,15 @@
                                                 <input type="number" name="t1" step="1" placeholder="上限">
                                             </td>
                                         </tr>
+                                        <tr>
+                                            <td>最終更新日</td>
+                                              <td>
+                                                <input type="text" class="js-datetimepicker" name="d2" value placeholder="YYYY/MM/DD" maxlength="10" autocomplete="off">
+                                                <span class="separator">～</span>
+                                                <input type="text" class="js-datetimepicker" name="d1" value placeholder="YYYY/MM/DD" maxlength="10" autocomplete="off">
+                                                <script>$(function(){ $.datetimepicker.setLocale('ja'); $('.js-datetimepicker').datetimepicker({ timepicker:false, format:'Y/m/d', }); });</script>
+                                            </td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -864,7 +873,7 @@
             });
             
             var filterParams = [
-            'rensai_s1', 'rensai_s2', 'rensai_s4', 'mozi2', 'mozi1', 'mozi2_all', 'mozi1_all', 'rate2', 'rate1', 'soupt2', 'soupt1', 'f2', 'f1', 're2', 're1', 'v2', 'v1', 'r2', 'r1', 't2', 't1'
+            'rensai_s1', 'rensai_s2', 'rensai_s4', 'mozi2', 'mozi1', 'mozi2_all', 'mozi1_all', 'rate2', 'rate1', 'soupt2', 'soupt1', 'f2', 'f1', 're2', 're1', 'v2', 'v1', 'r2', 'r1', 't2', 't1', 'd2', 'd1'
             ];
             
             filterParams.forEach(function(param) {
