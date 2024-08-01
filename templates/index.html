@@ -759,14 +759,31 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-     if ('serviceWorker' in navigator) {
-         navigator.serviceWorker.register('/service-worker.js')
-                  .then(function(registration) {
-                      console.log('Service Worker registered with scope:', registration.scope);
-                  }).catch(function(error) {
-                      console.log('Service Worker registration failed:', error);
-                  });
-     }
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/service-worker.js')
+        .then(function(registration) {
+            console.log('Service Worker registered with scope:', registration.scope);
+            registration.onupdatefound = function() {
+            const installingWorker = registration.installing;
+            installingWorker.onstatechange = function() {
+                if (installingWorker.state === 'installed') {
+                    if (navigator.serviceWorker.controller) {
+                        console.log('New content is available; please refresh.');
+                        if (confirm('新しいバージョンが利用可能です。ページをリロードしますか？')) {
+                            window.location.reload();
+                        }
+                    } else {
+                        console.log('Content is cached for offline use.');
+                    }
+                }
+            };
+            };
+        })
+        .catch(function(error) {
+            console.log('Service Worker registration failed:', error);
+        });
+    }
+
      document.getElementById('scrape-form').addEventListener('submit', function(e) {
          e.preventDefault();
          var url = document.getElementById('nid').value;
