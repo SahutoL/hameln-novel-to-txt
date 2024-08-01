@@ -5,7 +5,7 @@
     <meta name="description" content="web小説投稿サイト「ハーメルン」に投稿されている小説本文をテキストファイルに変換するツールです。" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="google-site-verification" content="oj6R_3BjNgPvcrKnDBeWOUwj9Lqkew1pLqE6c-tSDmU" />
-    <title>aHameln -> .txt</title>
+    <title>Hameln -> .txt</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="manifest" href="/manifest.json">
@@ -764,23 +764,27 @@
         .then(function(registration) {
             console.log('Service Worker registered with scope:', registration.scope);
             registration.onupdatefound = function() {
-            const installingWorker = registration.installing;
-            installingWorker.onstatechange = function() {
-                if (installingWorker.state === 'installed') {
-                    if (navigator.serviceWorker.controller) {
-                        console.log('New content is available; please refresh.');
-                        if (confirm('新しいバージョンが利用可能です。ページをリロードしますか？')) {
-                            window.location.reload();
+                const installingWorker = registration.installing;
+                installingWorker.onstatechange = function() {
+                    if (installingWorker.state === 'installed') {
+                        if (navigator.serviceWorker.controller) {
+                            console.log('New content is available; please refresh.');
+                            if (confirm('新しいバージョンが利用可能です。ページをリロードしますか？')) {
+                                window.location.reload();
+                            }
+                        } else {
+                            console.log('Content is cached for offline use.');
                         }
-                    } else {
-                        console.log('Content is cached for offline use.');
                     }
-                }
-            };
+                };
             };
         })
         .catch(function(error) {
             console.log('Service Worker registration failed:', error);
+        });
+        navigator.serviceWorker.addEventListener('controllerchange', function() {
+            console.log('Controller change detected. Reloading page.');
+            window.location.reload();
         });
     }
 
