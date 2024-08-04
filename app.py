@@ -146,6 +146,26 @@ def parse_novel(novel):
         'keywords': keywords,
         'favs': favs
     }
+    
+def start_scraping_hameln(nid: str):
+    novel_url = f"https://syosetu.org/novel/{nid}/"
+    
+    session = Session()
+    existing_novel = session.query(Novel).filter_by(nid=nid).first()
+    session.close()
+        
+    if existing_novel:
+        novel_store[nid] = [existing_novel.novel_text, existing_novel.title]
+        progress_store[nid] = 100
+        return jsonify({"status": "ready", "nid": nid})
+    else:
+        try:
+            task = threading.Thread(target=start_scraping_task, args=(novel_url, nid))
+            task.start()
+            background_tasks[nid] = task
+            return jsonify({"status": "started", "nid": nid})
+        except Exception as e:
+            return jsonify({"error": str(e)}), 400
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -153,28 +173,16 @@ def index():
 
 @app.route('/start-scraping', methods=['POST'])
 def start_scraping():
-    url = request.json['url']
+    url = request.json['url'].rstrip('/') + '/'
     match = re.search(r'https://syosetu.org/novel/(\d+)/', url)
+    if 'syosetu.com' in url:
+        if 'ncode' in novelUrl:
+            ncode = re.search(r"https://ncode\.syosetu\.com/([^/]+)/", novelUrl).group(1)
+        elif 'novel18' in novelUrl:
+            ncode = re.search(r"https://novel18\.syosetu\.com/([^/]+)/", novelUrl).group(1)
+
     if match:
-        nid = match.group(1)
-        novel_url = f"https://syosetu.org/novel/{nid}/"
-        
-        session = Session()
-        existing_novel = session.query(Novel).filter_by(nid=nid).first()
-        session.close()
-        
-        if existing_novel:
-            novel_store[nid] = [existing_novel.novel_text, existing_novel.title]
-            progress_store[nid] = 100
-            return jsonify({"status": "ready", "nid": nid})
-        else:
-            try:
-                task = threading.Thread(target=start_scraping_task, args=(novel_url, nid))
-                task.start()
-                background_tasks[nid] = task
-                return jsonify({"status": "started", "nid": nid})
-            except Exception as e:
-                return jsonify({"error": str(e)}), 400
+        start_scraping_hameln(match.group(1))
     else:
         return jsonify({"error": "Invalid URL format. Please enter a valid URL."}), 400
 
