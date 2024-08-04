@@ -205,9 +205,9 @@ def start_scraping():
         elif 'novel18.syosetu.com' in url:
             nid = re.search(r"https://novel18\.syosetu\.com/([^/]+)/", url).group(1)
             webSite = 'narou18'
-    """
     else:
         return jsonify({"error": "Invalid URL format. Please enter a valid URL."}), 400
+    """
 
     if nid:
         session = Session()
