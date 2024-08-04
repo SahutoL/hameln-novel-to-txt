@@ -79,12 +79,14 @@ def get_narou_text(session, url, headers, retry_count=3):
     return ""
 
 def get_novel_txt(nid: str, webSite: str):
-    if webSite == 'hameln':
-        novel_url = f"https://syosetu.org/novel/{nid}/"
+    #if webSite == 'hameln':
+    novel_url = f"https://syosetu.org/novel/{nid}/"
+    """
     elif webSite == 'narou':
         novel_url = f"https://ncode.syosetu.com/{nid}/"
     elif webSite == 'narou18':
         novel_url = f"https://novel18/syosetu.com/{nid}/"
+    """
 
     headers = {
         "User-Agent": get_random_user_agent(),
@@ -97,11 +99,12 @@ def get_novel_txt(nid: str, webSite: str):
 
     with get_session() as session:
         sleep(get_random_delay())
-        if webSite == 'hameln':
-            response = session.get(novel_url, headers=headers, cookies={'over18':'off'})
-            soup = BeautifulSoup(response.text, "html.parser")
-            title = soup.find('div', class_='ss').find('span', attrs={'itemprop':'name'}).text
-            chapter_count = len(soup.select('a[href^="./"]'))
+        #if webSite == 'hameln':
+        response = session.get(novel_url, headers=headers, cookies={'over18':'off'})
+        soup = BeautifulSoup(response.text, "html.parser")
+        title = soup.find('div', class_='ss').find('span', attrs={'itemprop':'name'}).text
+        chapter_count = len(soup.select('a[href^="./"]'))
+        """
         elif webSite == 'narou':
             response = session.get(f'https://ncode.syosetu.com/novelview/infotop/ncode/{nid}/', headers=headers, cookies={'over18':'yes'})
             soup = BeautifulSoup(response.text, "html.parser")
@@ -112,14 +115,16 @@ def get_novel_txt(nid: str, webSite: str):
             soup = BeautifulSoup(response.text, "html.parser")
             title = soup.find('h1').text
             chapter_count = int(soup.find('div', id='pre_info').text.split('全')[-1].split('エ')[0])
-
+        """
         txt_data = [None] * chapter_count
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
-            if webSite == 'hameln':
-                future_to_url = {executor.submit(get_chapter_text, session, f'{novel_url}{i+1}.html', headers): i for i in range(chapter_count)}
+            #if webSite == 'hameln':
+            future_to_url = {executor.submit(get_chapter_text, session, f'{novel_url}{i+1}.html', headers): i for i in range(chapter_count)}
+            """
             elif webSite == 'narou' or webSite == 'narou18':
                 future_to_url = {executor.submit(get_narou_text, session, f'{novel_url}{i+1}', headers): i for i in range(chapter_count)}
+            """
 
             completed_chapters = 0
             for future in concurrent.futures.as_completed(future_to_url):
@@ -192,6 +197,7 @@ def start_scraping():
     if re.search(r'https://syosetu.org/novel/(\d+)/', url):
         nid = re.search(r'https://syosetu.org/novel/(\d+)/', url).group(1)
         webSite = 'hameln'
+    """
     elif 'syosetu.com' in url:
         if 'ncode.syosetu.com' in url:
             nid = re.search(r"https://ncode\.syosetu\.com/([^/]+)/", url).group(1)
@@ -199,6 +205,7 @@ def start_scraping():
         elif 'novel18.syosetu.com' in url:
             nid = re.search(r"https://novel18\.syosetu\.com/([^/]+)/", url).group(1)
             webSite = 'narou18'
+    """
     else:
         return jsonify({"error": "Invalid URL format. Please enter a valid URL."}), 400
 
