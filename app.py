@@ -65,7 +65,7 @@ def get_chapter_text(session, url, headers, retry_count=3):
             sleep(get_random_delay())
     return ""
 
-def get_narou_txt(session, url, headers, retry_count=3):
+def get_narou_text(session, url, headers, retry_count=3):
     for _ in range(retry_count):
         try:
             sleep(get_random_delay())
@@ -210,12 +210,14 @@ def start_scraping():
         nid = re.search(r'https://syosetu.org/novel/(\d+)/', url).group(1)
         webSite = 'hameln'
     elif 'syosetu.com' in url:
-        if 'ncode' in novelUrl:
-            nid = re.search(r"https://ncode\.syosetu\.com/([^/]+)/", novelUrl).group(1)
+        if 'ncode.syosetu.com' in url:
+            nid = re.search(r"https://ncode\.syosetu\.com/([^/]+)/", url).group(1)
             webSite = 'narou'
-        elif 'novel18' in novelUrl:
-            nid = re.search(r"https://novel18\.syosetu\.com/([^/]+)/", novelUrl).group(1)
-            wbeSite = 'narou18'
+        elif 'novel18.syosetu.com' in url:
+            nid = re.search(r"https://novel18\.syosetu\.com/([^/]+)/", url).group(1)
+            webSite = 'narou18'
+    else:
+        return jsonify({"error": "Invalid URL format. Please enter a valid URL."}), 400
 
     if nid:
         return start_scraping_hameln(nid, webSite)
