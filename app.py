@@ -182,7 +182,7 @@ def start_scraping():
             ncode = re.search(r"https://novel18\.syosetu\.com/([^/]+)/", novelUrl).group(1)
 
     if match:
-        start_scraping_hameln(match.group(1))
+        return start_scraping_hameln(match.group(1))
     else:
         return jsonify({"error": "Invalid URL format. Please enter a valid URL."}), 400
 
