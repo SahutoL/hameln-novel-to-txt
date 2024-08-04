@@ -180,24 +180,7 @@ def parse_novel(novel):
         'keywords': keywords,
         'favs': favs
     }
-    
-def start_scraping_hameln(nid: str, webSite: str):
-    session = Session()
-    existing_novel = session.query(Novel).filter_by(nid=nid).first()
-    session.close()
-        
-    if existing_novel:
-        novel_store[nid] = [existing_novel.novel_text, existing_novel.title]
-        progress_store[nid] = 100
-        return jsonify({"status": "ready", "nid": nid})
-    else:
-        try:
-            task = threading.Thread(target=start_scraping_task, args=(nid, webSite))
-            task.start()
-            background_tasks[nid] = task
-            return jsonify({"status": "started", "nid": nid})
-        except Exception as e:
-            return jsonify({"error": str(e)}), 400
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -220,7 +203,22 @@ def start_scraping():
         return jsonify({"error": "Invalid URL format. Please enter a valid URL."}), 400
 
     if nid:
-        return start_scraping_hameln(nid, webSite)
+        session = Session()
+        existing_novel = session.query(Novel).filter_by(nid=nid).first()
+        session.close()
+        
+        if existing_novel:
+            novel_store[nid] = [existing_novel.novel_text, existing_novel.title]
+            progress_store[nid] = 100
+            return jsonify({"status": "ready", "nid": nid})
+        else:
+            try:
+                task = threading.Thread(target=start_scraping_task, args=(nid, webSite))
+                task.start()
+                background_tasks[nid] = task
+                return jsonify({"status": "started", "nid": nid})
+            except Exception as e:
+                return jsonify({"error": str(e)}), 400
     else:
         return jsonify({"error": "Invalid URL format. Please enter a valid URL."}), 400
 
