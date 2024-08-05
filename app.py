@@ -172,7 +172,7 @@ def start_scraping():
     match = re.search(r'https://syosetu.org/novel/(\d+)/', url)
 
     if match:
-        nid = mathc.group(1)
+        nid = match.group(1)
         session = Session()
         existing_novel = session.query(Novel).filter_by(nid=nid).first()
         session.close()
