@@ -78,9 +78,7 @@ def get_narou_text(session, url, headers, retry_count=3):
             sleep(get_random_delay())
     return ""
 
-def get_novel_txt(nid: str):
-    novel_url = f"https://syosetu.org/novel/{nid}/"
-
+def get_novel_txt(novel_url: str, nid: str):
     headers = {
         "User-Agent": get_random_user_agent(),
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
@@ -123,8 +121,8 @@ def get_novel_txt(nid: str):
         session.close()
 
 
-def start_scraping_task(nid):
-    get_novel_txt(nid)
+def start_scraping_task(novel_url: str, nid: str):
+    get_novel_txt(novel_url, nid)
     if nid in background_tasks:
         del background_tasks[nid]
 
@@ -168,11 +166,12 @@ def index():
 
 @app.route('/start-scraping', methods=['POST'])
 def start_scraping():
-    url = request.json['url'].rstrip('/') + '/'
+    url = request.json['url']
     match = re.search(r'https://syosetu.org/novel/(\d+)/', url)
 
     if match:
         nid = match.group(1)
+        novel_url = f"https://syosetu.org/novel/{nid}/"
         session = Session()
         existing_novel = session.query(Novel).filter_by(nid=nid).first()
         session.close()
@@ -183,7 +182,7 @@ def start_scraping():
             return jsonify({"status": "ready", "nid": nid})
         else:
             try:
-                task = threading.Thread(target=start_scraping_task, args=(nid))
+                task = threading.Thread(target=start_scraping_task, args=(novel_url, nid))
                 task.start()
                 background_tasks[nid] = task
                 return jsonify({"status": "started", "nid": nid})
