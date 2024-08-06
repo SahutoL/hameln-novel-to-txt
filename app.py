@@ -65,20 +65,9 @@ def get_chapter_text(session, url, headers, retry_count=3):
             sleep(get_random_delay())
     return ""
 
-def get_narou_text(session, url, headers, retry_count=3):
-    for _ in range(retry_count):
-        try:
-            sleep(get_random_delay())
-            response = session.get(url, headers=headers, cookies={'over18':'yes'})
-            soup = BeautifulSoup(response.text, "html.parser")
-            chapter_text = '\n'.join(p.text for p in soup.find('div', id='novel_honbun').find_all('p'))
-            return chapter_text
-        except Exception as e:
-            print(f"Error fetching {url}: {str(e)}. Retrying...")
-            sleep(get_random_delay())
-    return ""
 
 def get_novel_txt(novel_url: str, nid: str):
+    novel_url = novel_url.rstrip('/') + '/'
     headers = {
         "User-Agent": get_random_user_agent(),
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
@@ -120,9 +109,8 @@ def get_novel_txt(novel_url: str, nid: str):
         session.commit()
         session.close()
 
-
-def start_scraping_task(novel_url: str, nid: str):
-    get_novel_txt(novel_url, nid)
+def start_scraping_task(url, nid):
+    get_novel_txt(url, nid)
     if nid in background_tasks:
         del background_tasks[nid]
 
@@ -159,7 +147,6 @@ def parse_novel(novel):
         'favs': favs
     }
 
-
 @app.route('/', methods=['GET', 'POST'])
 def index():
     return render_template('index.html')
@@ -168,10 +155,10 @@ def index():
 def start_scraping():
     url = request.json['url']
     match = re.search(r'https://syosetu.org/novel/(\d+)/', url)
-
     if match:
         nid = match.group(1)
         novel_url = f"https://syosetu.org/novel/{nid}/"
+        
         session = Session()
         existing_novel = session.query(Novel).filter_by(nid=nid).first()
         session.close()
