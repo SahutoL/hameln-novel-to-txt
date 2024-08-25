@@ -787,46 +787,46 @@
             window.location.reload();
         });
     }
-
-     document.getElementById('scrape-form').addEventListener('submit', function(e) {
-         e.preventDefault();
-         var url = document.getElementById('nid').value;
-         var submitBtn = document.getElementById('submit-btn');
-         var progressBar = document.getElementById('progress-bar');
-         var errorMessage = document.getElementById('error-message');
+    
+    document.getElementById('scrape-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var url = document.getElementById('nid').value;
+        var submitBtn = document.getElementById('submit-btn');
+        var progressBar = document.getElementById('progress-bar');
+        var errorMessage = document.getElementById('error-message');
         
-         const downloadContainer = document.getElementById('download-container');
+        const downloadContainer = document.getElementById('download-container');
         if (downloadContainer) {
             downloadContainer.remove();
         }
 
-         submitBtn.disabled = true;
-         progressBar.style.display = 'block';
-         errorMessage.style.display = 'none';
+        submitBtn.disabled = true;
+        progressBar.style.display = 'block';
+        errorMessage.style.display = 'none';
 
-         fetch('/start-scraping', {
-             method: 'POST',
-             headers: {
-                 'Content-Type': 'application/json',
-             },
-             body: JSON.stringify({url: url}),
-         })
-             .then(response => response.json())
-             .then(data => {
-                 if (data.error) {
-                     throw new Error(data.error);
-                 }
-                 checkProgress(data.nid);
-             })
-             .catch(error => {
-                 errorMessage.textContent = error.message;
-                 errorMessage.style.display = 'block';
-                 submitBtn.disabled = false;
-                 progressBar.style.display = 'none';
-             });
-     });
+        fetch('/start-scraping', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({url: url}),
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                checkProgress(data.nid);
+            })
+            .catch(error => {
+                errorMessage.textContent = error.message;
+                errorMessage.style.display = 'block';
+                submitBtn.disabled = false;
+                progressBar.style.display = 'none';
+            });
+    });
 
-     function checkProgress(nid) {
+    function checkProgress(nid) {
          fetch(`/progress/${nid}`)
              .then(response => response.json())
              .then(data => {
@@ -846,8 +846,8 @@
              .catch(error => {
                  console.error('Error:', error);
              });
-     }
-     function showDownloadLink(nid) {
+    }
+    function showDownloadLink(nid) {
         var downloadLink = document.createElement('a');
         downloadLink.href = `/download/${nid}`;
         downloadLink.textContent = 'ダウンロード';
@@ -859,8 +859,8 @@
         container.style.textAlign = 'center';
         container.appendChild(downloadLink);
         document.getElementById('converter').appendChild(container);
-     }
-     document.addEventListener('DOMContentLoaded', function() {
+    }
+    document.addEventListener('DOMContentLoaded', function() {
         const toggleFilterBtn = document.getElementById('toggle-filter');
         const filterOptions = document.getElementById('filter-options');
         const buttonTextSpan = toggleFilterBtn.querySelector('span');
@@ -873,7 +873,7 @@
             buttonTextSpan.textContent = isHidden ? '絞り込みオプションを非表示 ' : '絞り込みオプションを表示 ';
         });
     });
-     document.getElementById('search-form').addEventListener('submit', function(e) {
+    document.getElementById('search-form').addEventListener('submit', function(e) {
             e.preventDefault();
             var word = document.getElementById('word').value;
             var checkedR18 = document.getElementById('r18').checked;
