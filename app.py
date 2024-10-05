@@ -49,6 +49,16 @@ def get_random_user_agent():
     ]
     return random.choice(user_agents)
 
+def get_random_referer():
+    referers = [
+        "https://www.google.com/search?q=%E3%83%8F%E3%83%BC%E3%83%A1%E3%83%AB%E3%83%B3&ie=UTF-8&oe=UTF-8&hl=ja-jp&client=safari",
+        "https://syosetu.org/",
+        "https://syosetu.org/search/?mode=search",
+        "https://syosetu.org/?mode=rank",
+        "https://syosetu.org/?mode=favo"
+    ]
+    return random.choice(referers)
+
 def get_random_delay():
     return random.uniform(3, 6)
 
@@ -72,7 +82,7 @@ def get_novel_txt(novel_url: str, nid: str):
         "User-Agent": get_random_user_agent(),
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
         "Accept-Language": "ja-JP,ja;q=0.9",
-        "Referer": "https://www.google.com/",
+        "Referer": get_random_referer(),
         "DNT": "1",
         "Upgrade-Insecure-Requests": "1"
     }
@@ -86,7 +96,7 @@ def get_novel_txt(novel_url: str, nid: str):
 
         txt_data = [None] * chapter_count
 
-        with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
             future_to_url = {executor.submit(get_chapter_text, session, f'{novel_url}{i+1}.html', headers): i for i in range(chapter_count)}
             completed_chapters = 0
             for future in concurrent.futures.as_completed(future_to_url):
