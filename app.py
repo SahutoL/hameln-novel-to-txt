@@ -174,6 +174,8 @@ def start_scraping():
         existing_novel = session.query(Novel).filter_by(nid=nid).first()
         session.close()
         
+        existing_novel = False
+        
         if existing_novel:
             novel_store[nid] = [existing_novel.novel_text, existing_novel.title]
             progress_store[nid] = 100
