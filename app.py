@@ -120,7 +120,33 @@ def get_novel_txt(novel_url: str, nid: str):
         session.commit()
         session.close()
 
-def get_narou_novel_txt(novel_url: str, nid: str):
+def get_all_chapter_urls(session, novel_url, headers):
+    chapter_urls = []
+    page_num = 1
+
+    while True:
+        url = f"{novel_url}?p={page_num}"
+        sleep(get_random_delay())
+        response = session.get(url, headers=headers)
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        chapter_links = soup.select('a[href^="/{}/"]'.format(novel_url.split('/')[-2]))
+        if not chapter_links:
+            break
+
+        for link in chapter_links:
+            chapter_urls.append(novel_url.rstrip('/') + link['href'])
+
+        next_page = soup.find('a', text='次へ')
+        if not next_page:
+            break
+
+        page_num += 1
+
+    return chapter_urls
+
+
+def get_novel_txt(novel_url: str, nid: str):
     headers = {
         "User-Agent": get_random_user_agent(),
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
@@ -135,33 +161,26 @@ def get_narou_novel_txt(novel_url: str, nid: str):
         sleep(get_random_delay())
         response = session.get(novel_url, headers=headers)
         soup = BeautifulSoup(response.text, "html.parser")
+        title = soup.find('p', class_='novel_title').text.strip()
         
-        title = soup.find('p', class_='novel_title').text
-        
-        chapters = soup.find_all('dd', class_='subtitle')
-        chapter_count = len(chapters)
+        # 複数ページに対応してすべてのチャプターURLを取得
+        chapter_urls = get_all_chapter_urls(session, novel_url, headers)
 
-        txt_data = [None] * chapter_count
+        txt_data = [None] * len(chapter_urls)
 
-        def fetch_narou_chapter_text(chapter_url):
-            response = session.get(chapter_url, headers=headers)
-            chapter_soup = BeautifulSoup(response.text, "html.parser")
-            chapter_text = '\n'.join(p.text for p in chapter_soup.find(id='novel_honbun').find_all('p'))
-            return chapter_text
-
-        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
-            future_to_chapter = {executor.submit(fetch_narou_chapter_text, f"https://ncode.syosetu.com{chapter.find('a')['href']}"): i for i, chapter in enumerate(chapters)}
+        with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+            future_to_url = {executor.submit(get_chapter_text, session, chapter_url, headers): idx for idx, chapter_url in enumerate(chapter_urls)}
             completed_chapters = 0
-            for future in concurrent.futures.as_completed(future_to_chapter):
-                chapter_num = future_to_chapter[future]
+            for future in concurrent.futures.as_completed(future_to_url):
+                chapter_num = future_to_url[future]
                 try:
                     chapter_text = future.result()
                     txt_data[chapter_num] = chapter_text
                     completed_chapters += 1
-                    progress_store[nid] = int((completed_chapters / chapter_count) * 100)
+                    progress_store[nid] = int((completed_chapters / len(chapter_urls)) * 100)
                 except Exception as exc:
-                    print(f'Chapter {chapter_num + 1} generated an exception: {exc}')
-        
+                    print(f'Chapter {chapter_num+1} generated an exception: {exc}')
+
         novel_text = '\n\n'.join(filter(None, txt_data))
         novel_store[nid] = [novel_text, title]
         progress_store[nid] = 100
