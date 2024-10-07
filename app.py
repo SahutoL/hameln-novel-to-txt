@@ -161,7 +161,7 @@ def get_narou_novel_txt(novel_url: str, nid: str):
         sleep(get_random_delay())
         response = session.get(novel_url, headers=headers)
         soup = BeautifulSoup(response.text, "html.parser")
-        title = soup.find('h1', class_="p-novel__title").text
+        title = soup.find('title').text
         
         chapter_urls = get_all_chapter_urls(session, novel_url, headers)
 
