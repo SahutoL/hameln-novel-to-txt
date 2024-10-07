@@ -146,7 +146,7 @@ def get_all_chapter_urls(session, novel_url, headers):
     return chapter_urls
 
 
-def get_novel_txt(novel_url: str, nid: str):
+def get_narou_novel_txt(novel_url: str, nid: str):
     headers = {
         "User-Agent": get_random_user_agent(),
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
