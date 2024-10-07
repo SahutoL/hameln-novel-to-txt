@@ -120,8 +120,63 @@ def get_novel_txt(novel_url: str, nid: str):
         session.commit()
         session.close()
 
+def get_narou_novel_txt(novel_url: str, nid: str):
+    headers = {
+        "User-Agent": get_random_user_agent(),
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+        "Accept-Language": "ja-JP,ja;q=0.9",
+        "Referer": get_random_referer(),
+        "DNT": "1",
+        "Upgrade-Insecure-Requests": "1",
+        "Connection": "keep-alive"
+    }
+
+    with get_session() as session:
+        sleep(get_random_delay())
+        response = session.get(novel_url, headers=headers)
+        soup = BeautifulSoup(response.text, "html.parser")
+        
+        title = soup.find('p', class_='novel_title').text
+        
+        chapters = soup.find_all('dd', class_='subtitle')
+        chapter_count = len(chapters)
+
+        txt_data = [None] * chapter_count
+
+        def fetch_narou_chapter_text(chapter_url):
+            response = session.get(chapter_url, headers=headers)
+            chapter_soup = BeautifulSoup(response.text, "html.parser")
+            chapter_text = '\n'.join(p.text for p in chapter_soup.find(id='novel_honbun').find_all('p'))
+            return chapter_text
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+            future_to_chapter = {executor.submit(fetch_narou_chapter_text, f"https://ncode.syosetu.com{chapter.find('a')['href']}"): i for i, chapter in enumerate(chapters)}
+            completed_chapters = 0
+            for future in concurrent.futures.as_completed(future_to_chapter):
+                chapter_num = future_to_chapter[future]
+                try:
+                    chapter_text = future.result()
+                    txt_data[chapter_num] = chapter_text
+                    completed_chapters += 1
+                    progress_store[nid] = int((completed_chapters / chapter_count) * 100)
+                except Exception as exc:
+                    print(f'Chapter {chapter_num + 1} generated an exception: {exc}')
+        
+        novel_text = '\n\n'.join(filter(None, txt_data))
+        novel_store[nid] = [novel_text, title]
+        progress_store[nid] = 100
+        
+        session = Session()
+        novel = Novel(nid=nid, novel_text=novel_text, title=title)
+        session.add(novel)
+        session.commit()
+        session.close()
+
 def start_scraping_task(url, nid):
-    get_novel_txt(url, nid)
+    if "ncode.syosetu.com" in url:
+        get_narou_novel_txt(url, nid)
+    else:
+        get_novel_txt(url, nid)
     if nid in background_tasks:
         del background_tasks[nid]
 
@@ -165,31 +220,34 @@ def index():
 @app.route('/start-scraping', methods=['POST'])
 def start_scraping():
     url = request.json['url']
-    match = re.search(r'https://syosetu.org/novel/(\d+)/', url)
+    match = re.search(r'https://ncode.syosetu.com/(\w+)/', url)
     if match:
         nid = match.group(1)
-        novel_url = f"https://syosetu.org/novel/{nid}/"
-        
-        session = Session()
-        existing_novel = session.query(Novel).filter_by(nid=nid).first()
-        session.close()
-        
-        existing_novel = False
-        
-        if existing_novel:
-            novel_store[nid] = [existing_novel.novel_text, existing_novel.title]
-            progress_store[nid] = 100
-            return jsonify({"status": "ready", "nid": nid})
-        else:
-            try:
-                task = threading.Thread(target=start_scraping_task, args=(novel_url, nid))
-                task.start()
-                background_tasks[nid] = task
-                return jsonify({"status": "started", "nid": nid})
-            except Exception as e:
-                return jsonify({"error": str(e)}), 400
+        novel_url = f"https://ncode.syosetu.com/{nid}/"
     else:
-        return jsonify({"error": "Invalid URL format. Please enter a valid URL."}), 400
+        match = re.search(r'https://syosetu.org/novel/(\d+)/', url)
+        if match:
+            nid = match.group(1)
+            novel_url = f"https://syosetu.org/novel/{nid}/"
+        else:
+            return jsonify({"error": "Invalid URL format. Please enter a valid URL."}), 400
+    
+    session = Session()
+    existing_novel = session.query(Novel).filter_by(nid=nid).first()
+    session.close()
+    
+    if existing_novel:
+        novel_store[nid] = [existing_novel.novel_text, existing_novel.title]
+        progress_store[nid] = 100
+        return jsonify({"status": "ready", "nid": nid})
+    else:
+        try:
+            task = threading.Thread(target=start_scraping_task, args=(novel_url, nid))
+            task.start()
+            background_tasks[nid] = task
+            return jsonify({"status": "started", "nid": nid})
+        except Exception as e:
+            return jsonify({"error": str(e)}), 400
 
 @app.route('/progress/<nid>', methods=['GET'])
 def get_progress(nid):
