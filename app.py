@@ -163,7 +163,6 @@ def get_novel_txt(novel_url: str, nid: str):
         soup = BeautifulSoup(response.text, "html.parser")
         title = soup.find('p', class_='novel_title').text.strip()
         
-        # 複数ページに対応してすべてのチャプターURLを取得
         chapter_urls = get_all_chapter_urls(session, novel_url, headers)
 
         txt_data = [None] * len(chapter_urls)
