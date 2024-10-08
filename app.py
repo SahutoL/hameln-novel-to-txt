@@ -18,12 +18,12 @@ engine = create_engine(DATABASE_URL)
 Base = declarative_base()
 Session = sessionmaker(bind=engine)
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 logger = logging.getLogger('LoggingTest')
 sh = logging.StreamHandler()
 logger.addHandler(sh)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 class Novel(Base):
     __tablename__ = 'novels'
@@ -168,7 +168,7 @@ def get_narou_novel_txt(novel_url: str, nid: str):
         sleep(get_random_delay())
         response = session.get(novel_url, headers=headers)
         soup = BeautifulSoup(response.text, "html.parser")
-        logger.debug(f"Soup content: {soup.prettify()}")
+        logger.info(soup)
         title = soup.find('title').text
         
         chapter_urls = get_all_chapter_urls(session, novel_url, headers)
