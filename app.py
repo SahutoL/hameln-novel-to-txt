@@ -18,6 +18,13 @@ engine = create_engine(DATABASE_URL)
 Base = declarative_base()
 Session = sessionmaker(bind=engine)
 
+logging.basicConfig(level=logging.DEBUG)
+
+logger = logging.getLogger('LoggingTest')
+sh = logging.StreamHandler()
+logger.addHandler(sh)
+logger.setLevel(logging.DEBUG)
+
 class Novel(Base):
     __tablename__ = 'novels'
     id = Column(Integer, primary_key=True)
@@ -157,15 +164,11 @@ def get_narou_novel_txt(novel_url: str, nid: str):
         "Connection": "keep-alive"
     }
     
-    logger = logging.getLogger('LoggingTest')
-    sh = logging.StreamHandler()
-    logger.addHandler(sh)
-
     with get_session() as session:
         sleep(get_random_delay())
         response = session.get(novel_url, headers=headers)
         soup = BeautifulSoup(response.text, "html.parser")
-        logger.log(100, soup)
+        logger.debug(f"Soup content: {soup.prettify()}")
         title = soup.find('title').text
         
         chapter_urls = get_all_chapter_urls(session, novel_url, headers)
