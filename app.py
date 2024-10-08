@@ -6,7 +6,7 @@ from urllib.parse import urlencode
 from bs4 import BeautifulSoup
 import concurrent.futures
 from time import sleep
-import threading, io, os, re, random
+import threading, io, os, re, random, logging
 from sqlalchemy import create_engine, Column, Integer, String, Text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -156,12 +156,16 @@ def get_narou_novel_txt(novel_url: str, nid: str):
         "Upgrade-Insecure-Requests": "1",
         "Connection": "keep-alive"
     }
+    
+    logger = logging.getLogger('LoggingTest')
+    sh = logging.StreamHandler()
+    logger.addHandler(sh)
 
     with get_session() as session:
         sleep(get_random_delay())
         response = session.get(novel_url, headers=headers)
         soup = BeautifulSoup(response.text, "html.parser")
-        print(soup)
+        logger.log(100, soup)
         title = soup.find('title').text
         
         chapter_urls = get_all_chapter_urls(session, novel_url, headers)
