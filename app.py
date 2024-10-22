@@ -154,6 +154,7 @@ def get_all_chapter_urls(session, novel_url, headers):
 
 
 def get_narou_novel_txt(novel_url: str, nid: str):
+    novel_url = novel_url.rstrip('/') + '/'
     headers = {
         "User-Agent": get_random_user_agent(),
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
@@ -163,46 +164,95 @@ def get_narou_novel_txt(novel_url: str, nid: str):
         "Upgrade-Insecure-Requests": "1",
         "Connection": "keep-alive"
     }
-    
+
     with get_session() as session:
         sleep(get_random_delay())
         response = session.get(novel_url, headers=headers)
         soup = BeautifulSoup(response.text, "html.parser")
-        logger.info(soup)
-        title = soup.find('title').text
-        
-        chapter_urls = get_all_chapter_urls(session, novel_url, headers)
 
-        txt_data = [None] * len(chapter_urls)
+        title_tag = soup.find('p', class_='novel_title')
+        if title_tag:
+            title = title_tag.text.strip()
+        else:
+            title = 'No Title'
 
-        with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
-            future_to_url = {executor.submit(get_chapter_text, session, chapter_url, headers): idx for idx, chapter_url in enumerate(chapter_urls)}
+        chapter_links = []
+        toc_area = soup.find('div', id='novel_no')
+        if toc_area:
+            chapter_links.append(novel_url)
+        else:
+            def collect_chapter_links(soup):
+                for dd in soup.find_all('dd', class_='subtitle'):
+                    a = dd.find('a')
+                    if a:
+                        href = a.get('href')
+                        if href:
+                            chapter_url = urllib.parse.urljoin(novel_url, href)
+                            chapter_links.append(chapter_url)
+
+            collect_chapter_links(soup)
+
+            page_nav = soup.find('div', class_='index_box')
+            if page_nav:
+                page_links = page_nav.find_all('a', class_='next_page')
+                while page_links:
+                    next_page_url = urllib.parse.urljoin(novel_url, page_links[0].get('href'))
+                    sleep(get_random_delay())
+                    response = session.get(next_page_url, headers=headers)
+                    soup = BeautifulSoup(response.text, "html.parser")
+                    collect_chapter_links(soup)
+                    page_nav = soup.find('div', class_='index_box')
+                    if page_nav:
+                        page_links = page_nav.find_all('a', class_='next_page')
+                    else:
+                        break
+
+        chapter_count = len(chapter_links)
+        txt_data = [None] * chapter_count
+
+        def fetch_chapter(chapter_url, index):
+            for _ in range(3):
+                try:
+                    sleep(get_random_delay())
+                    response = session.get(chapter_url, headers=headers)
+                    soup = BeautifulSoup(response.text, "html.parser")
+                    honbun = soup.find('div', id='novel_honbun')
+                    if honbun:
+                        chapter_text = '\n'.join(p.text for p in honbun.find_all('p'))
+                        return chapter_text
+                except Exception as e:
+                    print(f"Error fetching {chapter_url}: {str(e)}. Retrying...")
+                    sleep(get_random_delay())
+            return ""
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+            future_to_index = {executor.submit(fetch_chapter, chapter_links[i], i): i for i in range(chapter_count)}
             completed_chapters = 0
-            for future in concurrent.futures.as_completed(future_to_url):
-                chapter_num = future_to_url[future]
+            for future in concurrent.futures.as_completed(future_to_index):
+                index = future_to_index[future]
                 try:
                     chapter_text = future.result()
-                    txt_data[chapter_num] = chapter_text
+                    txt_data[index] = chapter_text
                     completed_chapters += 1
-                    progress_store[nid] = int((completed_chapters / len(chapter_urls)) * 100)
+                    progress_store[nid] = int((completed_chapters / chapter_count) * 100)
                 except Exception as exc:
-                    print(f'Chapter {chapter_num+1} generated an exception: {exc}')
+                    print(f'Chapter {index+1} generated an exception: {exc}')
 
         novel_text = '\n\n'.join(filter(None, txt_data))
         novel_store[nid] = [novel_text, title]
         progress_store[nid] = 100
-        
-        session = Session()
-        novel = Novel(nid=nid, novel_text=novel_text, title=title)
-        session.add(novel)
-        session.commit()
-        session.close()
 
-def start_scraping_task(url, nid):
-    if "ncode.syosetu.com" in url:
-        get_narou_novel_txt(url, nid)
-    else:
+        session_db = Session()
+        novel = Novel(nid=nid, novel_text=novel_text, title=title)
+        session_db.add(novel)
+        session_db.commit()
+        session_db.close()
+
+def start_scraping_task(url, nid, site):
+    if site == 'syosetu_org':
         get_novel_txt(url, nid)
+    elif site == 'ncode_syosetu_com':
+        get_narou_novel_txt(url, nid)
     if nid in background_tasks:
         del background_tasks[nid]
 
@@ -246,29 +296,31 @@ def index():
 @app.route('/start-scraping', methods=['POST'])
 def start_scraping():
     url = request.json['url']
-    match = re.search(r'https://ncode.syosetu.com/(\w+)/', url)
-    if match:
-        nid = match.group(1)
+    match_syosetu = re.search(r'https://syosetu.org/novel/(\d+)/', url)
+    match_ncode = re.search(r'https://ncode.syosetu.com/([a-z0-9]+)/?', url)
+    
+    if match_syosetu:
+        nid = match_syosetu.group(1)
+        novel_url = f"https://syosetu.org/novel/{nid}/"
+        site = 'syosetu_org'
+    elif match_ncode:
+        nid = match_ncode.group(1)
         novel_url = f"https://ncode.syosetu.com/{nid}/"
+        site = 'ncode_syosetu_com'
     else:
-        match = re.search(r'https://syosetu.org/novel/(\d+)/', url)
-        if match:
-            nid = match.group(1)
-            novel_url = f"https://syosetu.org/novel/{nid}/"
-        else:
-            return jsonify({"error": "Invalid URL format. Please enter a valid URL."}), 400
+        return jsonify({"error": "Invalid URL format. Please enter a valid URL."}), 400
     
     session = Session()
     existing_novel = session.query(Novel).filter_by(nid=nid).first()
     session.close()
-    
+
     if existing_novel:
         novel_store[nid] = [existing_novel.novel_text, existing_novel.title]
         progress_store[nid] = 100
         return jsonify({"status": "ready", "nid": nid})
     else:
         try:
-            task = threading.Thread(target=start_scraping_task, args=(novel_url, nid))
+            task = threading.Thread(target=start_scraping_task, args=(novel_url, nid, site))
             task.start()
             background_tasks[nid] = task
             return jsonify({"status": "started", "nid": nid})
