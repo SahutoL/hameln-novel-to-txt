@@ -73,7 +73,7 @@ def get_chapter_text(session, url, headers, retry_count=3):
     for _ in range(retry_count):
         try:
             sleep(get_random_delay())
-            response = session.get(url, headers=headers, cookies={'over18':'off'})
+            response = session.get(url, headers=headers,cookies={'over18':'off', '_pk_id.1.390c':'725ed6e664321325.1729586854.', '_pk_ses.1.390c':'1', 'uaid':'hX1IoWcXZqdP4knoMdqFAg'})
             soup = BeautifulSoup(response.text, "html.parser")
             chapter_text = '\n'.join(p.text for p in soup.find(id='honbun').find_all('p'))
             return chapter_text
@@ -97,7 +97,7 @@ def get_novel_txt(novel_url: str, nid: str):
 
     with get_session() as session:
         sleep(get_random_delay())
-        response = session.get(novel_url, headers=headers, cookies={'over18':'off'})
+        response = session.get(novel_url, headers=headers, cookies={'over18':'off', '_pk_id.1.390c':'725ed6e664321325.1729586854.', '_pk_ses.1.390c':'1', 'uaid':'hX1IoWcXZqdP4knoMdqFAg'})
         soup = BeautifulSoup(response.text, "html.parser")
         title = soup.find('div', class_='ss').find('span', attrs={'itemprop':'name'}).text
         chapter_count = len(soup.select('a[href^="./"]'))
@@ -383,7 +383,7 @@ def search():
     with get_session() as session:
         try:
             sleep(random.uniform(2,4))
-            response = session.get(url, headers=headers, cookies={'over18':'off', 'list_num':'50'})
+            response = session.get(url, headers=headers, cookies={'over18':'off', 'list_num':'50', '_pk_id.1.390c':'725ed6e664321325.1729586854.', '_pk_ses.1.390c':'1', 'uaid':'hX1IoWcXZqdP4knoMdqFAg'})
             soup = BeautifulSoup(response.text, 'html.parser')
             novels = soup.find_all('div', class_='section3')
 
