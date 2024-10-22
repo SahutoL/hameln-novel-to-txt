@@ -297,7 +297,7 @@ def index():
 def start_scraping():
     url = request.json['url']
     match_syosetu = re.search(r'https://syosetu.org/novel/(\d+)/', url)
-    match_ncode = re.search(r'https://ncode.syosetu.com/([a-z0-9]+)/?', url)
+    match_ncode = re.search(r'https://ncode.syosetu.com/([a-z0-9]+)/', url)
     
     if match_syosetu:
         nid = match_syosetu.group(1)
