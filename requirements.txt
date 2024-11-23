@@ -1,6 +1,7 @@
 flask
 requests
 beautifulsoup4
+cloudscraper
 gunicorn
 SQLAlchemy
 psycopg2-binary
