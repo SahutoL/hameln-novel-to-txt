@@ -6,7 +6,7 @@ from urllib.parse import urlencode
 from bs4 import BeautifulSoup
 import concurrent.futures
 from time import sleep
-import threading, io, os, re, random, logging
+import threading, io, os, re, random, logging, cloudscraper
 from sqlalchemy import create_engine, Column, Integer, String, Text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -69,11 +69,11 @@ def get_random_referer():
 def get_random_delay():
     return random.uniform(5, 10)
 
-def get_chapter_text(session, url, headers, nid, wasuu, retry_count=3):
+def get_chapter_text(scraper, url, headers, nid, wasuu, retry_count=3):
     for _ in range(retry_count):
         try:
             sleep(get_random_delay())
-            response = session.get(url, headers=headers,cookies={'ETURAN': f'{nid}_{wasuu}', 'over18':'off', '_pk_id.1.390c':'725ed6e664321325.1729586854.', '_pk_ses.1.390c':'1', 'uaid':'hX1IoWcXZqdP4knoMdqFAg'})
+            response = scraper.get(url, headers=headers,cookies={'ETURAN': f'{nid}_{wasuu}', 'over18':'off', '_pk_id.1.390c':'725ed6e664321325.1729586854.', '_pk_ses.1.390c':'1', 'uaid':'hX1IoWcXZqdP4knoMdqFAg'})
             soup = BeautifulSoup(response.text, "html.parser")
             chapter_text = '\n'.join(p.text for p in soup.find(id='honbun').find_all('p'))
             return chapter_text
@@ -94,10 +94,12 @@ def get_novel_txt(novel_url: str, nid: str):
         "Upgrade-Insecure-Requests": "1",
         "Connection": "keep-alive"
     }
+    
+    scraper = cloudscraper.create_scraper()
 
-    with get_session() as session:
+    try:
         sleep(get_random_delay())
-        response = session.get(novel_url, headers=headers, cookies={'over18':'off', '_pk_id.1.390c':'725ed6e664321325.1729586854.', '_pk_ses.1.390c':'1', 'uaid':'hX1IoWcXZqdP4knoMdqFAg'})
+        response = scraper.get(novel_url, headers=headers, cookies={'over18':'off', '_pk_id.1.390c':'725ed6e664321325.1729586854.', '_pk_ses.1.390c':'1', 'uaid':'hX1IoWcXZqdP4knoMdqFAg'})
         soup = BeautifulSoup(response.text, "html.parser")
         title = soup.find('div', class_='ss').find('span', attrs={'itemprop':'name'}).text
         chapter_count = len(soup.select('a[href^="./"]'))
@@ -105,7 +107,7 @@ def get_novel_txt(novel_url: str, nid: str):
         txt_data = [None] * chapter_count
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
-            future_to_url = {executor.submit(get_chapter_text, session, f'{novel_url}{i+1}.html', headers, nid, i+1): i for i in range(chapter_count)}
+            future_to_url = {executor.submit(get_chapter_text, scraper, f'{novel_url}{i+1}.html', headers, nid, i+1): i for i in range(chapter_count)}
             completed_chapters = 0
             for future in concurrent.futures.as_completed(future_to_url):
                 chapter_num = future_to_url[future] + 1
@@ -126,6 +128,8 @@ def get_novel_txt(novel_url: str, nid: str):
         session.add(novel)
         session.commit()
         session.close()
+    except Exception as e:
+        print(f"Error fetching novel: {str(e)}")
 
 def start_scraping_task(url, nid, site):
     if site == 'syosetu_org':
