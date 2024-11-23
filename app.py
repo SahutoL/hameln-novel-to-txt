@@ -69,11 +69,11 @@ def get_random_referer():
 def get_random_delay():
     return random.uniform(5, 10)
 
-def get_chapter_text(session, url, headers, retry_count=3):
+def get_chapter_text(session, url, headers, nid, wasuu, retry_count=3):
     for _ in range(retry_count):
         try:
             sleep(get_random_delay())
-            response = session.get(url, headers=headers,cookies={'over18':'off', '_pk_id.1.390c':'725ed6e664321325.1729586854.', '_pk_ses.1.390c':'1', 'uaid':'hX1IoWcXZqdP4knoMdqFAg'})
+            response = session.get(url, headers=headers,cookies={'ETURAN': f'{nid}_{wasuu}', 'over18':'off', '_pk_id.1.390c':'725ed6e664321325.1729586854.', '_pk_ses.1.390c':'1', 'uaid':'hX1IoWcXZqdP4knoMdqFAg'})
             soup = BeautifulSoup(response.text, "html.parser")
             chapter_text = '\n'.join(p.text for p in soup.find(id='honbun').find_all('p'))
             return chapter_text
@@ -105,7 +105,7 @@ def get_novel_txt(novel_url: str, nid: str):
         txt_data = [None] * chapter_count
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
-            future_to_url = {executor.submit(get_chapter_text, session, f'{novel_url}{i+1}.html', headers): i for i in range(chapter_count)}
+            future_to_url = {executor.submit(get_chapter_text, session, f'{novel_url}{i+1}.html', headers, nid, i+1): i for i in range(chapter_count)}
             completed_chapters = 0
             for future in concurrent.futures.as_completed(future_to_url):
                 chapter_num = future_to_url[future] + 1
@@ -126,127 +126,6 @@ def get_novel_txt(novel_url: str, nid: str):
         session.add(novel)
         session.commit()
         session.close()
-
-def get_all_chapter_urls(session, novel_url, headers):
-    chapter_urls = []
-    page_num = 1
-
-    while True:
-        url = f"{novel_url}?p={page_num}"
-        sleep(get_random_delay())
-        response = session.get(url, headers=headers)
-        soup = BeautifulSoup(response.text, "html.parser")
-
-        chapter_links = soup.select('a[href^="/{}/"]'.format(novel_url.split('/')[-2]))
-        if not chapter_links:
-            break
-
-        for link in chapter_links:
-            chapter_urls.append(novel_url.rstrip('/') + link['href'])
-
-        next_page = soup.find('a', text='次へ')
-        if not next_page:
-            break
-
-        page_num += 1
-
-    return chapter_urls
-
-
-def get_narou_novel_txt(novel_url: str, nid: str):
-    novel_url = novel_url.rstrip('/') + '/'
-    headers = {
-        "User-Agent": get_random_user_agent(),
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
-        "Accept-Language": "ja-JP,ja;q=0.9",
-        "Referer": get_random_referer(),
-        "DNT": "1",
-        "Upgrade-Insecure-Requests": "1",
-        "Connection": "keep-alive"
-    }
-
-    with get_session() as session:
-        sleep(get_random_delay())
-        response = session.get(novel_url, headers=headers)
-        soup = BeautifulSoup(response.text, "html.parser")
-
-        title_tag = soup.find('p', class_='novel_title')
-        if title_tag:
-            title = title_tag.text.strip()
-        else:
-            title = 'No Title'
-
-        chapter_links = []
-        toc_area = soup.find('div', id='novel_no')
-        if toc_area:
-            chapter_links.append(novel_url)
-        else:
-            def collect_chapter_links(soup):
-                for dd in soup.find_all('dd', class_='subtitle'):
-                    a = dd.find('a')
-                    if a:
-                        href = a.get('href')
-                        if href:
-                            chapter_url = urllib.parse.urljoin(novel_url, href)
-                            chapter_links.append(chapter_url)
-
-            collect_chapter_links(soup)
-
-            page_nav = soup.find('div', class_='index_box')
-            if page_nav:
-                page_links = page_nav.find_all('a', class_='next_page')
-                while page_links:
-                    next_page_url = urllib.parse.urljoin(novel_url, page_links[0].get('href'))
-                    sleep(get_random_delay())
-                    response = session.get(next_page_url, headers=headers)
-                    soup = BeautifulSoup(response.text, "html.parser")
-                    collect_chapter_links(soup)
-                    page_nav = soup.find('div', class_='index_box')
-                    if page_nav:
-                        page_links = page_nav.find_all('a', class_='next_page')
-                    else:
-                        break
-
-        chapter_count = len(chapter_links)
-        txt_data = [None] * chapter_count
-
-        def fetch_chapter(chapter_url, index):
-            for _ in range(3):
-                try:
-                    sleep(get_random_delay())
-                    response = session.get(chapter_url, headers=headers)
-                    soup = BeautifulSoup(response.text, "html.parser")
-                    honbun = soup.find('div', id='novel_honbun')
-                    if honbun:
-                        chapter_text = '\n'.join(p.text for p in honbun.find_all('p'))
-                        return chapter_text
-                except Exception as e:
-                    print(f"Error fetching {chapter_url}: {str(e)}. Retrying...")
-                    sleep(get_random_delay())
-            return ""
-
-        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
-            future_to_index = {executor.submit(fetch_chapter, chapter_links[i], i): i for i in range(chapter_count)}
-            completed_chapters = 0
-            for future in concurrent.futures.as_completed(future_to_index):
-                index = future_to_index[future]
-                try:
-                    chapter_text = future.result()
-                    txt_data[index] = chapter_text
-                    completed_chapters += 1
-                    progress_store[nid] = int((completed_chapters / chapter_count) * 100)
-                except Exception as exc:
-                    print(f'Chapter {index+1} generated an exception: {exc}')
-
-        novel_text = '\n\n'.join(filter(None, txt_data))
-        novel_store[nid] = [novel_text, title]
-        progress_store[nid] = 100
-
-        session_db = Session()
-        novel = Novel(nid=nid, novel_text=novel_text, title=title)
-        session_db.add(novel)
-        session_db.commit()
-        session_db.close()
 
 def start_scraping_task(url, nid, site):
     if site == 'syosetu_org':
