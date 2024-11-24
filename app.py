@@ -263,24 +263,25 @@ def search():
         "DNT": "1",
         "Upgrade-Insecure-Requests": "1"
     }
-    with get_session() as session:
-        try:
-            sleep(random.uniform(2,4))
-            response = session.get(url, headers=headers, cookies={'over18':'off', 'list_num':'50', '_pk_id.1.390c':'725ed6e664321325.1729586854.', '_pk_ses.1.390c':'1', 'uaid':'hX1IoWcXZqdP4knoMdqFAg'})
-            soup = BeautifulSoup(response.text, 'html.parser')
-            novels = soup.find_all('div', class_='section3')
+    scraper = cloudscraper.create_scraper()
+    #with get_session() as session:
+    try:
+        sleep(random.uniform(2,4))
+        response = scraper.get(url, headers=headers, cookies={'over18':'off', 'list_num':'50', '_pk_id.1.390c':'725ed6e664321325.1729586854.', '_pk_ses.1.390c':'1', 'uaid':'hX1IoWcXZqdP4knoMdqFAg'})
+        soup = BeautifulSoup(response.text, 'html.parser')
+        novels = soup.find_all('div', class_='section3')
 
-            with concurrent.futures.ThreadPoolExecutor() as executor:
-                future_to_index = {executor.submit(parse_novel, novel): i for i, novel in enumerate(novels)}
-                results = [None] * len(novels)
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            future_to_index = {executor.submit(parse_novel, novel): i for i, novel in enumerate(novels)}
+            results = [None] * len(novels)
                 
-                for future in concurrent.futures.as_completed(future_to_index):
-                    index = future_to_index[future]
-                    results[index] = future.result()
+            for future in concurrent.futures.as_completed(future_to_index):
+                index = future_to_index[future]
+                results[index] = future.result()
 
-            return jsonify({'results': results})
-        except Exception as e:
-            return jsonify({'error': str(e)}), 500
+        return jsonify({'results': results})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/manifest.json')
 def manifest():
