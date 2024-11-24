@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: flask-novel-scraper
+    name: hameln-novel-to-txt
     env: python
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app
