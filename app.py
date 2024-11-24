@@ -267,7 +267,7 @@ def search():
     #with get_session() as session:
     try:
         sleep(random.uniform(2,4))
-        response = scraper.get(url, headers=headers, cookies={'over18':'off', 'list_num':'50', '_pk_id.1.390c':'725ed6e664321325.1729586854.', '_pk_ses.1.390c':'1', 'uaid':'hX1IoWcXZqdP4knoMdqFAg'})
+        response = scraper.get(url, headers=headers, cookies={'over18':'off', 'list_num':'50'})#, '_pk_id.1.390c':'725ed6e664321325.1729586854.', '_pk_ses.1.390c':'1', 'uaid':'hX1IoWcXZqdP4knoMdqFAg'})
         soup = BeautifulSoup(response.text, 'html.parser')
         novels = soup.find_all('div', class_='section3')
 
