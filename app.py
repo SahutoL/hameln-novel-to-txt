@@ -75,14 +75,13 @@ def get_chapter_text(scraper, url, headers, nid, wasuu, retry_count=3):
             sleep(get_random_delay())
             response = scraper.get(url, headers=headers,cookies={'ETURAN': f'{nid}_{wasuu}', 'over18':'off'})
             soup = BeautifulSoup(response.text, "html.parser")
-            """
-            result = [str(part).strip() for part in soup.find('h2')]
+            h2_tag = soup.find(id='entry_box').find('h2')
+            result = [str(part).strip() for part in h2_tag.contents]
             chpater_title = (
                 f'# {result[0]}\n## {result[2]}\n\n' if len(result) == 3 else 
                 f'## {result[0]}\n\n' if len(result) == 1 else 
                 ''
             )
-            """
             chapter_text = '\n'.join(p.text for p in soup.find(id='honbun').find_all('p'))
             return chapter_text
         except Exception as e:
