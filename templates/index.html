@@ -686,6 +686,9 @@
 
         submitBtn.disabled = true;
         progressBar.style.display = 'block';
+        progressBar.querySelector('.progress-bar').style.width = '0%';
+        progressBar.querySelector('.progress-bar').textContent = '0%';
+        progressBar.querySelector('.progress-bar').setAttribute('aria-valuenow', 0);
         errorMessage.style.display = 'none';
 
         fetch('/start-scraping', {
@@ -720,7 +723,7 @@
                  progressBar.setAttribute('aria-valuenow', data.progress);
 
                  if (data.progress < 100) {
-                     setTimeout(() => checkProgress(nid), 1000);
+                     setTimeout(() => checkProgress(nid), 3001);
                  } else {
                      document.getElementById('progress-bar').style.display = 'none';
                      showDownloadLink(nid);
