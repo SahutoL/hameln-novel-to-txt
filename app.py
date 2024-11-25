@@ -75,14 +75,16 @@ def get_chapter_text(scraper, url, headers, nid, wasuu, retry_count=3):
             sleep(get_random_delay())
             response = scraper.get(url, headers=headers,cookies={'ETURAN': f'{nid}_{wasuu}', 'over18':'off'})
             soup = BeautifulSoup(response.text, "html.parser")
+            """
             result = [str(part).strip() for part in soup.find('h2')]
             chpater_title = (
                 f'# {result[0]}\n## {result[2]}\n\n' if len(result) == 3 else 
                 f'## {result[0]}\n\n' if len(result) == 1 else 
                 ''
             )
+            """
             chapter_text = '\n'.join(p.text for p in soup.find(id='honbun').find_all('p'))
-            return chpater_title + chapter_text
+            return soup.find('h2') + chapter_text
         except Exception as e:
             print(f"Error fetching {url}: {str(e)}. Retrying...")
             sleep(get_random_delay())
