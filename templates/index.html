@@ -714,7 +714,7 @@
     });
 
     function checkProgress(nid) {
-         fetch(`/progress/${nid}`)
+         fetch(`/progress/${nid}?t=${new Date().getTime()}`)
              .then(response => response.json())
              .then(data => {
                  var progressBar = document.querySelector('.progress-bar');
