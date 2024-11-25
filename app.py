@@ -221,6 +221,7 @@ def start_scraping():
 @app.route('/progress/<nid>', methods=['GET'])
 def get_progress(nid):
     progress = progress_store.get(nid, 0)
+    print(progress)
     return jsonify({"progress": progress})
 
 @app.route('/download/<nid>', methods=['GET'])
