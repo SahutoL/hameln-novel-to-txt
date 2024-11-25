@@ -106,7 +106,7 @@ def get_novel_txt(novel_url: str, nid: str):
 
     try:
         sleep(get_random_delay())
-        response = scraper.get(novel_url, headers=headers, cookies={'over18':'off', '_pk_id.1.390c':'725ed6e664321325.1729586854.', '_pk_ses.1.390c':'1', 'uaid':'hX1IoWcXZqdP4knoMdqFAg'})
+        response = scraper.get(novel_url, headers=headers, cookies={'over18':'off'})
         soup = BeautifulSoup(response.text, "html.parser")
         title = soup.find('div', class_='ss').find('span', attrs={'itemprop':'name'}).text
         chapter_count = len(soup.select('a[href^="./"]'))
