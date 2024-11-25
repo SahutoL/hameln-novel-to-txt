@@ -83,7 +83,6 @@ def get_chapter_text(scraper, url, headers, nid, wasuu, retry_count=3):
                 f'## {result[0]}\n\n' if len(result) == 1 else 
                 ''
             )
-            print(chapter_title)
             chapter_text = '\n'.join(p.text for p in soup.find(id='honbun').find_all('p'))
             return chapter_title + chapter_text
         except Exception as e:
