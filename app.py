@@ -76,8 +76,10 @@ def get_chapter_text(scraper, url, headers, nid, wasuu, retry_count=3):
             response = scraper.get(url, headers=headers,cookies={'ETURAN': f'{nid}_{wasuu}', 'over18':'off'})
             soup = BeautifulSoup(response.text, "html.parser")
             chapter_title_tag = soup.find(id='maind').find_all('span')[1]
-            chapter_title_text = chapter_title_tag.get_text().replace('<ruby>', '').replace('</ruby>', '').replace('<rb>', '').replace('</rb>', '').replace('<rt>', '').replace('</rt>', '').replace('<rp>', '').replace('</rp>', '')
-            result = [str(part).strip() for part in chapter_title_text.split('\n') if part.strip()]
+            chapter_title_text = chapter_title_tag.decode_contents()
+            for tag in ['ruby', 'rb', 'rt', 'rp']:
+                chapter_title_text = chapter_title_text.replace(f'<{tag}>', '').replace(f'</{tag}>', '')
+            result = [str(part).strip() for part in chapter_title_text.split('<br>') if part.strip()]
             chapter_title = (
                 f'# {result[0]}\n## {result[2]}\n\n' if len(result) == 3 else 
                 f'## {result[0]}\n\n' if len(result) == 1 else 
