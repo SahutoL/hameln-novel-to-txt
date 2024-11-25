@@ -79,8 +79,8 @@ def get_chapter_text(scraper, url, headers, nid, wasuu, retry_count=3):
             content_parts = [str(part).strip() for part in h2_tag.contents if part != "<br>"]
             result = content_parts if len(content_parts) > 1 else h2_tag.get_text(strip=True)
             chpater_title = (
-                f'#{result[0]}\n##{result[1]}\n\n' if len(result) == 2 else 
-                f'##{result[0]}\n\n' if len(result) == 1 else 
+                f'# {result[0]}\n## {result[1]}\n\n' if len(result) == 2 else 
+                f'## {result[0]}\n\n' if len(result) == 1 else 
                 ''
             )
             chapter_text = '\n'.join(p.text for p in soup.find(id='honbun').find_all('p'))
