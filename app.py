@@ -67,7 +67,7 @@ def get_random_referer():
     return random.choice(referers)
 
 def get_random_delay():
-    return random.uniform(5, 10)
+    return random.uniform(2, 5)
 
 def get_chapter_text(scraper, url, headers, nid, wasuu, retry_count=3):
     for _ in range(retry_count):
