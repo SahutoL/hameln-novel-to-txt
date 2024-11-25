@@ -75,10 +75,9 @@ def get_chapter_text(scraper, url, headers, nid, wasuu, retry_count=3):
             sleep(get_random_delay())
             response = scraper.get(url, headers=headers,cookies={'ETURAN': f'{nid}_{wasuu}', 'over18':'off'})
             soup = BeautifulSoup(response.text, "html.parser")
-            content_parts = [str(part).strip() for part in soup.find('h2') if part != "<br>"]
-            result = content_parts if len(content_parts) > 1 else h2_tag.get_text(strip=True)
+            result = [str(part).strip() for part in soup.find('h2')]
             chpater_title = (
-                f'# {result[0]}\n## {result[1]}\n\n' if len(result) == 2 else 
+                f'# {result[0]}\n## {result[2]}\n\n' if len(result) == 3 else 
                 f'## {result[0]}\n\n' if len(result) == 1 else 
                 ''
             )
