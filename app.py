@@ -85,6 +85,7 @@ def get_chapter_text(scraper, url, headers, nid, wasuu, retry_count=3):
             chapter_text = '\n'.join(p.text for p in soup.find(id='honbun').find_all('p'))
             return chapter_text
         except Exception as e:
+            print(f"Error fetching {url}: {soup}")
             print(f"Error fetching {url}: {str(e)}. Retrying...")
             sleep(get_random_delay())
     return ""
