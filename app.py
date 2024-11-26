@@ -143,6 +143,7 @@ def get_novel_txt(novel_url: str, nid: str):
         session.commit()
         session.close()
     except Exception as e:
+        print(soup)
         print(f"Error fetching novel: {str(e)}")
 
 def start_scraping_task(url, nid, site):
