@@ -80,8 +80,6 @@ def get_chapter_text(scraper, url, headers, nid, wasuu, retry_count=3):
                 chapter_title_tag = chapter_title_tags.find_all('span')[2]
             else:
                 chapter_title_tag = chapter_title_tags.find_all('span')[1]
-                
-            print(soup.find(id="maind"))
             chapter_title_text = chapter_title_tag.decode_contents()
             for tag in ['ruby', 'rb', 'rt', 'rp']:
                 chapter_title_text = chapter_title_text.replace(f'<{tag}>', '').replace(f'</{tag}>', '')
@@ -94,6 +92,7 @@ def get_chapter_text(scraper, url, headers, nid, wasuu, retry_count=3):
             chapter_text = '\n'.join(p.text for p in soup.find(id='honbun').find_all('p'))
             return chapter_title + chapter_text
         except Exception as e:
+            print(chapter_title_tags)
             print(f"Error fetching {url}: {str(e)}. Retrying...")
             sleep(get_random_delay())
     return ""
