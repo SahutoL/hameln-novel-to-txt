@@ -92,7 +92,6 @@ def get_chapter_text(scraper, url, headers, nid, wasuu, retry_count=3):
             chapter_text = '\n'.join(p.text for p in soup.find(id='honbun').find_all('p'))
             return chapter_title + chapter_text
         except Exception as e:
-            print(chapter_title_tags)
             print(f"Error fetching {url}: {str(e)}. Retrying...")
             sleep(get_random_delay())
     return ""
@@ -117,7 +116,7 @@ def get_novel_txt(novel_url: str, nid: str):
         response = scraper.get(novel_url, headers=headers, cookies={'over18':'off'})
         soup = BeautifulSoup(response.text, "html.parser")
         title = soup.find('div', class_='ss').find('span', attrs={'itemprop':'name'}).text
-        chapter_count = len(soup.select('a[href^="./"]'))
+        chapter_count = len(soup.find('ul', class_='entry').select('a[href^="./"]'))
 
         txt_data = [None] * chapter_count
 
