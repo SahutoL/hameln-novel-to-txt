@@ -116,6 +116,7 @@ def get_novel_txt(novel_url: str, nid: str):
         response = scraper.get(novel_url, headers=headers, cookies={'over18':'off'})
         soup = BeautifulSoup(response.text, "html.parser")
         title = soup.find('div', class_='ss').find('span', attrs={'itemprop':'name'}).text
+        print(soup.select('a[href^="./"]'))
         chapter_count = len(soup.select('a[href^="./"]'))
 
         txt_data = [None] * chapter_count
