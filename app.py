@@ -75,7 +75,12 @@ def get_chapter_text(scraper, url, headers, nid, wasuu, retry_count=3):
             sleep(get_random_delay())
             response = scraper.get(url, headers=headers,cookies={'ETURAN': f'{nid}_{wasuu}', 'over18':'off'})
             soup = BeautifulSoup(response.text, "html.parser")
-            chapter_title_tag = soup.find(id='maind').find_all('span')[1]
+            chapter_title_tags = soup.find(id='maind')
+            if chapter_title_tags.find('span', class_='alert_color'):
+                chapter_title_tag = chapter_title_tags.find_all('span')[2]
+            else:
+                chapter_title_tag = chapter_title_tags.find_all('span')[1]
+                
             print(soup.find(id="maind"))
             chapter_title_text = chapter_title_tag.decode_contents()
             for tag in ['ruby', 'rb', 'rt', 'rp']:
