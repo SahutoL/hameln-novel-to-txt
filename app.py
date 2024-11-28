@@ -196,7 +196,7 @@ def get_narou_novel_txt(novel_url: str, nid: str):
             response = scraper.get(f'https://novel18.syosetu.com/novelview/infotop/ncode/{ncode}/', headers=headers, cookies={'over18':'yes'})
         soup = BeautifulSoup(response.text, "html.parser")
         print(soup)
-        break
+        """
         chapter_count = len(soup.select('a[href^="./"]'))
 
         txt_data = [None] * chapter_count
@@ -223,6 +223,7 @@ def get_narou_novel_txt(novel_url: str, nid: str):
         session.add(novel)
         session.commit()
         session.close()
+        """
     except Exception as e:
         print(f"Error fetching novel: {str(e)}")
 
