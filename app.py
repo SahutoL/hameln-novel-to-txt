@@ -65,6 +65,17 @@ def get_random_referer():
         "https://syosetu.org/?mode=favo"
     ]
     return random.choice(referers)
+    
+def get_narou_random_referer():
+    referers = [
+        "https://www.google.com/search?q=%E5%B0%8F%E8%AA%AC%E5%AE%B6%E3%81%AB%E3%81%AA%E3%82%8D%E3%81%86&ie=utf-8&oe=utf-8",
+        "https://www.google.com/search?q=%E5%B0%8F%E8%AA%AC%E3%82%92%E8%AA%AD%E3%82%82%E3%81%86&ie=utf-8&oe=utf-8",
+        "https://syosetu.com/user/top/",
+        "https://syosetu.com/favnovelmain/list/?nowcategory=2&order=newlist",
+        "https://yomou.syosetu.com/search.php",
+        "https://yomou.syosetu.com/rank/top/"
+    ]
+    return random.choice(referers)
 
 def get_random_delay():
     return random.uniform(2, 5)
@@ -173,14 +184,12 @@ def get_narou_chapter_text(scraper, url, headers, nid, wasuu, retry_count=3):
     return ""
 
 def get_narou_novel_txt(novel_url: str, nid: str):
-    print('novel_url: ', novel_url)
     novel_url = novel_url.rstrip('/') + '/'
-    print('novel_url: ', novel_url)
     headers = {
         "User-Agent": get_random_user_agent(),
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
         "Accept-Language": "ja-JP,ja;q=0.9",
-        "Referer": get_random_referer(),
+        "Referer": get_narou_random_referer(),
         "DNT": "1",
         "Upgrade-Insecure-Requests": "1",
         "Connection": "keep-alive"
@@ -193,13 +202,13 @@ def get_narou_novel_txt(novel_url: str, nid: str):
         print('novel_url: ', novel_url)
         if 'ncode' in novel_url:
             ncode = re.search(r"https://ncode\.syosetu\.com/([^/]+)/", novel_url).group(1)
-            print('ncode: ', ncode)
+            print(f'https://ncode.syosetu.com/novelview/infotop/ncode/{ncode}/')
             response = scraper.get(f'https://ncode.syosetu.com/novelview/infotop/ncode/{ncode}/', headers=headers, cookies={'over18':'yes'})
         elif 'novel18' in novel_url:
             ncode = re.search(r"https://novel18\.syosetu\.com/([^/]+)/", novel_url).group(1)
             response = scraper.get(f'https://novel18.syosetu.com/novelview/infotop/ncode/{ncode}/', headers=headers, cookies={'over18':'yes'})
         soup = BeautifulSoup(response.text, "html.parser")
-        print(soup)
+        print('soup: ', soup)
         """
         chapter_count = len(soup.select('a[href^="./"]'))
 
