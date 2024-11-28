@@ -173,7 +173,9 @@ def get_narou_chapter_text(scraper, url, headers, nid, wasuu, retry_count=3):
     return ""
 
 def get_narou_novel_txt(novel_url: str, nid: str):
+    print('novel_url: ', novel_url)
     novel_url = novel_url.rstrip('/') + '/'
+    print('novel_url: ', novel_url)
     headers = {
         "User-Agent": get_random_user_agent(),
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
@@ -188,8 +190,10 @@ def get_narou_novel_txt(novel_url: str, nid: str):
 
     try:
         sleep(get_random_delay())
+        print('novel_url: ', novel_url)
         if 'ncode' in novel_url:
             ncode = re.search(r"https://ncode\.syosetu\.com/([^/]+)/", novel_url).group(1)
+            print('ncode: ', ncode)
             response = scraper.get(f'https://ncode.syosetu.com/novelview/infotop/ncode/{ncode}/', headers=headers, cookies={'over18':'yes'})
         elif 'novel18' in novel_url:
             ncode = re.search(r"https://novel18\.syosetu\.com/([^/]+)/", novel_url).group(1)
