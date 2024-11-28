@@ -125,7 +125,7 @@ def get_novel_txt(novel_url: str, nid: str):
             future_to_url = {executor.submit(get_chapter_text, scraper, f'{novel_url}{i+1}.html', headers, nid, i+1): i for i in range(chapter_count)}
             completed_chapters = 0
             for future in concurrent.futures.as_completed(future_to_url):
-                chapter_num = future_to_urlq[future] + 1
+                chapter_num = future_to_url[future] + 1
                 try:
                     chapter_text = future.result()
                     txt_data[chapter_num] = chapter_text
