@@ -196,19 +196,20 @@ def get_narou_novel_txt(novel_url: str, nid: str):
     }
     
     scraper = cloudscraper.create_scraper()
-
-    try:
-        sleep(get_random_delay())
-        print('novel_url: ', novel_url)
-        if 'ncode' in novel_url:
-            ncode = re.search(r"https://ncode\.syosetu\.com/([^/]+)/", novel_url).group(1)
-            print(f'https://ncode.syosetu.com/novelview/infotop/ncode/{ncode}/')
-            response = scraper.get(f'https://ncode.syosetu.com/novelview/infotop/ncode/{ncode}/', headers=headers, cookies={'over18':'yes'})
-        elif 'novel18' in novel_url:
-            ncode = re.search(r"https://novel18\.syosetu\.com/([^/]+)/", novel_url).group(1)
-            response = scraper.get(f'https://novel18.syosetu.com/novelview/infotop/ncode/{ncode}/', headers=headers, cookies={'over18':'yes'})
-        soup = BeautifulSoup(response.text, "html.parser")
-        print('soup: ', soup)
+    
+    with get_session() as session:
+        try:
+            sleep(get_random_delay())
+            print('novel_url: ', novel_url)
+            if 'ncode' in novel_url:
+                ncode = re.search(r"https://ncode\.syosetu\.com/([^/]+)/", novel_url).group(1)
+                print(f'https://ncode.syosetu.com/novelview/infotop/ncode/{ncode}/')
+                response = session.get(f'https://ncode.syosetu.com/novelview/infotop/ncode/{ncode}/', headers=headers, cookies={'over18':'yes'})
+            elif 'novel18' in novel_url:
+                ncode = re.search(r"https://novel18\.syosetu\.com/([^/]+)/", novel_url).group(1)
+                response = scraper.get(f'https://novel18.syosetu.com/novelview/infotop/ncode/{ncode}/', headers=headers, cookies={'over18':'yes'})
+            soup = BeautifulSoup(response.text, "html.parser")
+            print('soup: ', soup)
         """
         chapter_count = len(soup.select('a[href^="./"]'))
 
@@ -237,8 +238,8 @@ def get_narou_novel_txt(novel_url: str, nid: str):
         session.commit()
         session.close()
         """
-    except Exception as e:
-        print(f"Error fetching novel: {str(e)}")
+        except Exception as e:
+            print(f"Error fetching novel: {str(e)}")
 
 def start_scraping_task(url, nid, site):
     if site == 'syosetu_org':
