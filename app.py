@@ -202,11 +202,13 @@ def get_narou_novel_txt(novel_url: str, nid: str):
         print('novel_url: ', novel_url)
         if 'ncode' in novel_url:
             ncode = re.search(r"https://ncode\.syosetu\.com/([^/]+)/", novel_url).group(1)
-            print(f'https://ncode.syosetu.com/novelview/infotop/ncode/{ncode}/')
-            response = scraper.get(f'https://ncode.syosetu.com/novelview/infotop/ncode/{ncode}/', headers=headers, cookies={'over18':'yes'})
+            novel_info_url = f'https://ncode.syosetu.com/novelview/infotop/ncode/{ncode}/'
+            response = scraper.get(novel_info_url, headers=headers, cookies={'over18':'yes'})
         elif 'novel18' in novel_url:
             ncode = re.search(r"https://novel18\.syosetu\.com/([^/]+)/", novel_url).group(1)
             response = scraper.get(f'https://novel18.syosetu.com/novelview/infotop/ncode/{ncode}/', headers=headers, cookies={'over18':'yes'})
+        sleep(get_random_delay())
+        response = scraper.get(novel_url, headers=headers, cookies={'over18':'yes'})
         print('Response text:', response.text[:500])
         soup = BeautifulSoup(response.text, "html.parser")
         print('soup: ', soup.prettify())
