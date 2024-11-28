@@ -116,7 +116,6 @@ def get_novel_txt(novel_url: str, nid: str):
         response = scraper.get(novel_url, headers=headers, cookies={'over18':'off'})
         soup = BeautifulSoup(response.text, "html.parser")
         title = soup.find('div', class_='ss').find('span', attrs={'itemprop':'name'}).text
-        print(len(soup.select('a[href^="./"]')))
         chapter_count = len(soup.select('a[href^="./"]'))
 
         txt_data = [None] * chapter_count
@@ -125,12 +124,11 @@ def get_novel_txt(novel_url: str, nid: str):
             future_to_url = {executor.submit(get_chapter_text, scraper, f'{novel_url}{i+1}.html', headers, nid, i+1): i for i in range(chapter_count)}
             completed_chapters = 0
             for future in concurrent.futures.as_completed(future_to_url):
-                chapter_num = future_to_url[future] + 1
+                chapter_num = future_to_url[future]
                 try:
                     chapter_text = future.result()
                     txt_data[chapter_num] = chapter_text
                     completed_chapters += 1
-                    print(completed_chapters)
                     progress_store[nid] = int((completed_chapters / chapter_count) * 100) - 1
                 except Exception as exc:
                     print(f'Chapter {chapter_num} generated an exception: {exc}')
