@@ -195,51 +195,51 @@ def get_narou_novel_txt(novel_url: str, nid: str):
         "Connection": "keep-alive"
     }
     
-    scraper = cloudscraper.create_scraper()
+    scraper = cloudscraper.create_scraper(browser={'browser': 'chrome', 'platform': 'windows', 'mobile': False})
     
-    with get_session() as session:
-        try:
-            sleep(get_random_delay())
-            print('novel_url: ', novel_url)
-            if 'ncode' in novel_url:
-                ncode = re.search(r"https://ncode\.syosetu\.com/([^/]+)/", novel_url).group(1)
-                print(f'https://ncode.syosetu.com/novelview/infotop/ncode/{ncode}/')
-                response = session.get(f'https://ncode.syosetu.com/novelview/infotop/ncode/{ncode}/', headers=headers, cookies={'over18':'yes'})
-            elif 'novel18' in novel_url:
-                ncode = re.search(r"https://novel18\.syosetu\.com/([^/]+)/", novel_url).group(1)
-                response = scraper.get(f'https://novel18.syosetu.com/novelview/infotop/ncode/{ncode}/', headers=headers, cookies={'over18':'yes'})
-            soup = BeautifulSoup(response.text, "html.parser")
-            print('soup: ', soup)
-            """
-            chapter_count = len(soup.select('a[href^="./"]'))
+    try:
+        sleep(get_random_delay())
+        print('novel_url: ', novel_url)
+        if 'ncode' in novel_url:
+            ncode = re.search(r"https://ncode\.syosetu\.com/([^/]+)/", novel_url).group(1)
+            print(f'https://ncode.syosetu.com/novelview/infotop/ncode/{ncode}/')
+            response = scraper.get(f'https://ncode.syosetu.com/novelview/infotop/ncode/{ncode}/', headers=headers, cookies={'over18':'yes'})
+        elif 'novel18' in novel_url:
+            ncode = re.search(r"https://novel18\.syosetu\.com/([^/]+)/", novel_url).group(1)
+            response = scraper.get(f'https://novel18.syosetu.com/novelview/infotop/ncode/{ncode}/', headers=headers, cookies={'over18':'yes'})
+        print('Response text:', response.text[:500])
+        soup = BeautifulSoup(response.text, "html.parser")
+        print('soup: ', soup.prettify())
+        """
+        chapter_count = len(soup.select('a[href^="./"]'))
 
-            txt_data = [None] * chapter_count
+        txt_data = [None] * chapter_count
 
-            with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
-                future_to_url = {executor.submit(get_narou_chapter_text, scraper, f'{novel_url}{i+1}.html', headers, nid, i+1): i for i in range(chapter_count)}
-                completed_chapters = 0
-                for future in concurrent.futures.as_completed(future_to_url):
-                    chapter_num = future_to_url[future]
-                    try:
-                        chapter_text = future.result()
-                        txt_data[chapter_num] = chapter_text
-                        completed_chapters += 1
-                        progress_store[nid] = int((completed_chapters / chapter_count) * 100) - 1
-                    except Exception as exc:
-                        print(f'Chapter {chapter_num} generated an exception: {exc}')
+        with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+            future_to_url = {executor.submit(get_narou_chapter_text, scraper, f'{novel_url}{i+1}.html', headers, nid, i+1): i for i in range(chapter_count)}
+            completed_chapters = 0
+            for future in concurrent.futures.as_completed(future_to_url):
+                chapter_num = future_to_url[future]
+                try:
+                    chapter_text = future.result()
+                    txt_data[chapter_num] = chapter_text
+                    completed_chapters += 1
+                    progress_store[nid] = int((completed_chapters / chapter_count) * 100) - 1
+                except Exception as exc:
+                    print(f'Chapter {chapter_num} generated an exception: {exc}')
 
-            novel_text = '\n\n'.join(filter(None, txt_data))
-            novel_store[nid] = [novel_text, title]
-            progress_store[nid] = 100
+        novel_text = '\n\n'.join(filter(None, txt_data))
+        novel_store[nid] = [novel_text, title]
+        progress_store[nid] = 100
         
-            session = Session()
-            novel = Novel(nid=nid, novel_text=novel_text, title=title)
-            session.add(novel)
-            session.commit()
-            session.close()
-            """
-        except Exception as e:
-            print(f"Error fetching novel: {str(e)}")
+        session = Session()
+        novel = Novel(nid=nid, novel_text=novel_text, title=title)
+        session.add(novel)
+        session.commit()
+        session.close()
+        """
+    except Exception as e:
+        print(f"Error fetching novel: {str(e)}")
 
 def start_scraping_task(url, nid, site):
     if site == 'syosetu_org':
