@@ -1,3 +1,4 @@
+<!--
 # hameln-novel-to-txt
 
 ## 概要
@@ -57,3 +58,4 @@ uvicorn app:app --reload
 ## 連絡先
 
 質問や提案がある場合は、[Issues](https://github.com/SahutoL/hameln-novel-to-txt/issues)を開いてください。
+-->
