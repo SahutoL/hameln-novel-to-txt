@@ -312,7 +312,7 @@ def start_scraping():
 
     if existing_novel:
         novel_store[nid] = [existing_novel.novel_text, existing_novel.title]
-        progress_store[nid] = 100
+        progress_store[nid] = [100, existing_novel.title]
         return jsonify({"status": "ready", "nid": nid})
     else:
         try:
@@ -325,7 +325,6 @@ def start_scraping():
 
 @app.route('/progress/<nid>', methods=['GET'])
 def get_progress(nid):
-    print(progress_store.get(nid, 0))
     progress = progress_store.get(nid, 0)[0]
     title = progress_store.get(nid, 0)[1]
     return jsonify({"progress": progress, "title": title})
