@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hameln-txt-cache-v1.5.8';
+const CACHE_NAME = 'hameln-txt-cache-v1.5.9';
 const urlsToCache = [
   '/',
   '/static/icons/icon-192x192.png',
