@@ -8,6 +8,7 @@
     <title>Hameln -> .txt</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
     <link rel="manifest" href="/manifest.json">
     <style>
         body {
@@ -396,6 +397,11 @@
     </style>
 </head>
 <body>
+    <div id="progress-container">
+      <div id="progress-circle" data-progress="0">
+        <span id="progress-text">0%</span>
+      </div>
+    </div>
     <div class="container mt-5">
         <div class="card">
             <div class="card-body" id="converter">
@@ -721,6 +727,8 @@
                  progressBar.style.width = data.progress + '%';
                  progressBar.textContent = data.progress + '%';
                  progressBar.setAttribute('aria-valuenow', data.progress);
+                
+                  updateProgress(data.progress, nid);
 
                  if (data.progress < 100) {
                      setTimeout(() => checkProgress(nid), 3001);
@@ -734,6 +742,22 @@
                  console.error('Error:', error);
              });
     }
+    
+    function updateProgress(progress, nid) {
+      const progressCircle = document.getElementById('progress-circle');
+      const progressText = document.getElementById('progress-text');
+
+      progressCircle.setAttribute('data-progress', progress);
+      progressCircle.style.background = `conic-gradient(hotpink ${progress}%, lightgray ${progress}%)`;
+      progressText.textContent = progress < 100 ? `${progress}%` : "開く";
+
+      if (progress === 100) {
+        progressCircle.addEventListener('click', () => {
+            window.open(`/download/${nid}`);
+        });
+      }
+    }
+
     function showDownloadLink(nid) {
         var downloadLink = document.createElement('a');
         downloadLink.href = `/download/${nid}`;
