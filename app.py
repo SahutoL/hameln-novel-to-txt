@@ -140,13 +140,13 @@ def get_novel_txt(novel_url: str, nid: str):
                     chapter_text = future.result()
                     txt_data[chapter_num] = chapter_text
                     completed_chapters += 1
-                    progress_store[nid] = int((completed_chapters / chapter_count) * 100) - 1
+                    progress_store[nid] = [int((completed_chapters / chapter_count) * 100) - 1, title]
                 except Exception as exc:
                     print(f'Chapter {chapter_num} generated an exception: {exc}')
 
         novel_text = '\n\n'.join(filter(None, txt_data))
         novel_store[nid] = [novel_text, title]
-        progress_store[nid] = 100
+        progress_store[nid] = [100, title]
         
         session = Session()
         novel = Novel(nid=nid, novel_text=novel_text, title=title)
@@ -227,13 +227,13 @@ def get_narou_novel_txt(novel_url: str, nid: str):
                     chapter_text = future.result()
                     txt_data[chapter_num] = chapter_text
                     completed_chapters += 1
-                    progress_store[nid] = int((completed_chapters / chapter_count) * 100) - 1
+                    progress_store[nid] = [int((completed_chapters / chapter_count) * 100) - 1, title]
                 except Exception as exc:
                     print(f'Chapter {chapter_num} generated an exception: {exc}')
 
         novel_text = '\n\n'.join(filter(None, txt_data))
         novel_store[nid] = [novel_text, title]
-        progress_store[nid] = 100
+        progress_store[nid] = [100, title]
         
         session = Session()
         novel = Novel(nid=nid, novel_text=novel_text, title=title)
@@ -326,7 +326,8 @@ def start_scraping():
 @app.route('/progress/<nid>', methods=['GET'])
 def get_progress(nid):
     progress = progress_store.get(nid, 0)
-    return jsonify({"progress": progress})
+    title = progress_store.get(nid, 1)
+    return jsonify({"progress": progress, "title": title})
 
 @app.route('/download/<nid>', methods=['GET'])
 def download_novel(nid):
