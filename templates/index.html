@@ -395,18 +395,18 @@
             transform: rotate(180deg);
         }
         #progress-container {
+            z-index: 10000;
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-top: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-top: 7%;
+            margin-bottom: 7%;
             position: fixed;
-            top: 10px;
-            left: 50%;
             transform: translateX(-50%);
-            background: white;
+            background: #f0f4f8;
             padding: 10px 20px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-            border-radius: 30px;
+            border-radius: 15px;
         }
         #progress-circle {
             width: 50px;
@@ -432,6 +432,7 @@
 </head>
 <body>
     <div id="progress-container">
+      <span id="novel-title"></span>
       <div id="progress-circle" data-progress="0">
         <span id="progress-text"></span>
       </div>
@@ -780,13 +781,18 @@
     function updateProgress(progress, nid) {
       const progressCircle = document.getElementById('progress-circle');
       const progressText = document.getElementById('progress-text');
+      const novelTitle = document.getElementById('novel-title');
 
+      novelTitle.textContent = `✗ ${nid}`;
       progressCircle.setAttribute('data-progress', progress);
       progressCircle.style.background = `conic-gradient(hotpink ${progress}%, lightgray ${progress}%)`;
       progressText.textContent = progress < 100 ? `${progress}%` : "開く";
 
       if (progress === 100) {
         progressCircle.addEventListener('click', () => {
+            novelTitle.textContent = '';
+            progressText.textContent = '';
+            progressCircle.style.background = '#f0f4f8';
             window.open(`/download/${nid}`);
         });
       }
