@@ -447,7 +447,7 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
+    width: 80%;
     background-color: #fff;
     border-bottom: 1px solid #ddd;
     z-index: 9999;
@@ -470,7 +470,7 @@ body {
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    border: 3px solid #007bff;
+    background: conic-gradient(#007bff 0%, lightgray 0%);
     position: relative;
     display: flex;
     align-items: center;
