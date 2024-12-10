@@ -140,7 +140,7 @@ def get_novel_txt(novel_url: str, nid: str):
                     chapter_text = future.result()
                     txt_data[chapter_num] = chapter_text
                     completed_chapters += 1
-                    progress_store[nid] = [int((completed_chapters / chapter_count) * 100) - 1, title]
+                    progress_store[nid] = [int((completed_chapters / chapter_count) * 100), title]
                 except Exception as exc:
                     print(f'Chapter {chapter_num} generated an exception: {exc}')
 
@@ -325,7 +325,7 @@ def start_scraping():
 
 @app.route('/progress/<nid>', methods=['GET'])
 def get_progress(nid):
-    progress = progress_store.get(nid, [0])[0]
+    progress = progress_store.get(nid, [-1])[0]
     title = progress_store.get(nid, ['',''])[1]
     return jsonify({"progress": progress, "title": title})
 
