@@ -336,6 +336,7 @@
                 errorMessage.style.display = 'block';
                 submitBtn.disabled = false;
                 progressBar.style.display = 'none';
+                topBar.style.display = 'none';
             });
     });
 
@@ -361,6 +362,8 @@
                       circle.classList.add('complete');
                       circle.textContent = '開く';
                       circle.addEventListener('click', () => {
+                            circle.classList.remove('complete');
+                            circle.textContent = '';
                            progressText.textContent = '';
                            titleElement.textContent = '';
                            topBar.style.display = 'none';
