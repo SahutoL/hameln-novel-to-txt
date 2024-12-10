@@ -341,6 +341,7 @@
         const topBar = document.getElementById('progress-bar-top');
         const circle = document.getElementById('progress-circle');
         const titleElement = document.getElementById('novel-title');
+        circle.style.opacity = '100';
         fetch(`/progress/${nid}?t=${new Date().getTime()}`)
              .then(response => response.json())
              .then(data => {
@@ -356,20 +357,23 @@
                  if (data.progress < 100) {
                      setTimeout(() => checkProgress(nid), 3001);
                  } else {
-                      circle.classList.add('complete');
-                      circle.textContent = '開く';
-                      circle.addEventListener('click', () => {
+                       circle.style.opacity = '0';
+                       const openButton = document.createElement("button");
+                       openButton.className = "btn btn-success";
+                       openButton.textContent = "開く";
+                       openButton.onclick = function () {
                            circle.setAttribute('data-progress', 0);
                            circle.style.background = 'conic-gradient(#007bff 0%, lightgray 0%)';
                            circle.classList.remove('complete');
-                            circle.textContent = '';
+                           circle.textContent = '';
                            titleElement.textContent = '';
                            topBar.style.display = 'none';
-                           window.open(`/download/${nid}`, '_blank');
-                       });
+                           window.open(`/download/${nid}`, "_blank");
+                       }
+                        topBar.appendChild(openButton);
                        document.getElementById('progress-bar').style.display = 'none';
-                      showDownloadLink(nid);
-                      document.getElementById('submit-btn').disabled = false;
+                       showDownloadLink(nid);
+                       document.getElementById('submit-btn').disabled = false;
                  }
              })
              .catch(error => {
