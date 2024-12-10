@@ -14,9 +14,7 @@
 <body>
     <div class="fixed-top-bar" id="progress-bar-top" style="display: none;">
         <span class="title" id="novel-title"></span>
-        <div class="progress-circle" id="progress-circle" data-progress="0">
-            <span class="progress-text" id="progress-text"></span>
-        </div>
+        <div class="progress-circle" id="progress-circle" data-progress="0"></div>
     </div>
     <div class="container mt-5">
         <div class="card">
@@ -303,7 +301,6 @@
         const topBar = document.getElementById('progress-bar-top');
         const titleElement = document.getElementById('novel-title');
         const circle = document.getElementById('progress-circle');
-        const progressText = document.getElementById('progress-text');
         const downloadContainer = document.getElementById('download-container');
         if (downloadContainer) {
             downloadContainer.remove();
@@ -343,7 +340,6 @@
     function checkProgress(nid) {
         const topBar = document.getElementById('progress-bar-top');
         const circle = document.getElementById('progress-circle');
-        const progressText = document.getElementById('progress-text');
         const titleElement = document.getElementById('novel-title');
         fetch(`/progress/${nid}?t=${new Date().getTime()}`)
              .then(response => response.json())
@@ -353,8 +349,8 @@
                  progressBar.textContent = data.progress + '%';
                  progressBar.setAttribute('aria-valuenow', data.progress);
                  
-                 circle.setAttribute = ('data-progress', data.progress);
-                 circle.style.background = `background: conic-gradient(#007bff ${data.progress}%, lightgray ${data.progress}%)`;
+                 circle.setAttribute('data-progress', data.progress);
+                 circle.style.background = `conic-gradient(#007bff ${data.progress}%, lightgray ${data.progress}%)`;
                  titleElement.textContent = `${data.title}`;
 
                  if (data.progress < 100) {
@@ -363,11 +359,10 @@
                       circle.classList.add('complete');
                       circle.textContent = '開く';
                       circle.addEventListener('click', () => {
-                           circle.setAttribute = ('data-progress', 0);
-                           circle.style.background = 'background: conic-gradient(#007bff 0%, lightgray 0%)';
+                           circle.setAttribute('data-progress', 0);
+                           circle.style.background = 'conic-gradient(#007bff 0%, lightgray 0%)';
                            circle.classList.remove('complete');
                             circle.textContent = '';
-                           progressText.textContent = '';
                            titleElement.textContent = '';
                            topBar.style.display = 'none';
                            window.open(`/download/${nid}`, '_blank');
