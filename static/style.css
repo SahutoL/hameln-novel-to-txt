@@ -447,7 +447,7 @@ body {
     max-width: 1000px;
     position: fixed;
     top: 0;
-    width: 85%;
+    width: 92%;
     background-color: #fff;
     border-radius: 15px;
     border-bottom: 1px solid #ddd;
@@ -455,13 +455,14 @@ body {
     margin: 0 auto;
     padding: 10px 20px;
     display: flex;
+    text-align: center;
     align-items: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .fixed-top-bar .title {
     flex-grow: 1;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     color: #333;
     white-space: nowrap;
     overflow: hidden;
@@ -478,6 +479,18 @@ body {
     align-items: center;
     justify-content: center;
 }
+
+.fixed-top-bar .progress-circle::before {
+    content: '';
+    width: 20px;
+    height: 20px;
+    background-color: #f0f4f8;
+    border-radius: 50%;
+    position: absolute;
+    z-index: 1;
+}
+
+
 
 .fixed-top-bar .progress-circle.complete {
     background-color: #007bff;
