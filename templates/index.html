@@ -355,7 +355,7 @@
                  titleElement.textContent = `${data.title}`;
 
                  if (data.progress < 100) {
-                     setTimeout(() => checkProgress(nid), 3001);
+                     setTimeout(() => checkProgress(nid), 5000);
                  } else {
                        circle.style.opacity = '0';
                        const openButton = document.createElement("button");
