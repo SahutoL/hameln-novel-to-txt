@@ -493,10 +493,10 @@ body {
 }
 
 .open-button {
-    font-size: 0.9rem;
-    padding: 6px 12px;
+    font-size: 0.85rem;
+    padding: 5px 10px;
     border: none;
-    border-radius: 14px;
+    border-radius: 16px;
     background-color: #007aff;
     color: white;
     text-align: center;
