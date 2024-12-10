@@ -443,58 +443,46 @@ body {
     transform: rotate(180deg);
 }
 
-#progress-bar-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: #fff;
-    border-radius: 30px;
-    padding: 10px 20px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+.fixed-top-bar {
     position: fixed;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 320px;
-    max-width: 90%;
-    z-index: 1000;
-    font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-    transition: all 0.3s ease;
-}
-
-#novel-title {
-    font-size: 16px;
-    font-weight: 500;
-    color: #333;
-    flex-grow: 1;
-    margin-right: 10px;
-}
-
-#progress-circle {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: conic-gradient(hotpink 0%, lightgray 0%);
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    border-bottom: 1px solid #ddd;
+    z-index: 9999;
+    padding: 10px 20px;
     display: flex;
-    justify-content: center;
     align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.fixed-top-bar .title {
+    flex-grow: 1;
+    font-size: 1rem;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.fixed-top-bar .progress-circle {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 3px solid #007bff;
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fixed-top-bar .progress-circle.complete {
+    background-color: #007bff;
+    color: #fff;
     cursor: pointer;
-    transition: all 0.3s ease;
 }
 
-#progress-circle[data-progress="100"] {
-    background: green;
-    color: white;
-}
-
-#progress-text {
-    position: absolute;
-    font-size: 14px;
-    font-weight: bold;
-    color: white;
-}
-
-#progress-circle:hover {
-    transform: scale(1.1);
+.fixed-top-bar .progress-circle.complete:hover {
+    background-color: #0056b3;
 }
