@@ -455,7 +455,7 @@ body {
     margin: 0 auto;
     padding: 10px 20px;
     display: flex;
-    text-align: center;
+    justify-content: center;
     align-items: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
