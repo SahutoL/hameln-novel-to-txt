@@ -447,9 +447,9 @@ body {
     max-width: 1000px;
     position: fixed;
     top: 0;
-    left: 0;
-    width: 80%;
+    width: 85%;
     background-color: #fff;
+    border-radius: 15px;
     border-bottom: 1px solid #ddd;
     z-index: 9999;
     margin: 0 auto;
@@ -461,7 +461,7 @@ body {
 
 .fixed-top-bar .title {
     flex-grow: 1;
-    font-size: 1rem;
+    font-size: 0.8rem;
     color: #333;
     white-space: nowrap;
     overflow: hidden;
