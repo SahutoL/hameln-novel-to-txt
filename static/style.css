@@ -490,14 +490,16 @@ body {
     z-index: 1;
 }
 
-
-
-.fixed-top-bar .progress-circle.complete {
-    background-color: #007bff;
-    color: #fff;
-    cursor: pointer;
+.btn-success {
+    font-size: 16px;
+    padding: 10px 20px;
+    border-radius: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
 }
 
-.fixed-top-bar .progress-circle.complete:hover {
-    background-color: #0056b3;
+.btn-success:hover {
+    background-color: #28a745;
+    color: white;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
 }
