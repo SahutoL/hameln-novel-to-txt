@@ -444,6 +444,7 @@ body {
 }
 
 .fixed-top-bar {
+    max-width: 1000px;
     position: fixed;
     top: 0;
     left: 0;
@@ -451,6 +452,7 @@ body {
     background-color: #fff;
     border-bottom: 1px solid #ddd;
     z-index: 9999;
+    margin: 0 auto;
     padding: 10px 20px;
     display: flex;
     align-items: center;
