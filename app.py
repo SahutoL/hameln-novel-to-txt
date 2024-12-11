@@ -37,6 +37,7 @@ Base.metadata.create_all(engine)
 progress_store = {}
 novel_store = {}
 background_tasks = {}
+lock = threading.Lock()
 
 def get_session():
     session = requests.Session()
@@ -245,12 +246,17 @@ def get_narou_novel_txt(novel_url: str, nid: str):
         print(f"Error fetching novel: {str(e)}")
 
 def start_scraping_task(url, nid, site):
+    with lock:
+        if nid in progress_store and progress_store[nid][0] < 100:
+            return
+        progress_store[nid] = [0, ""]
     if site == 'syosetu_org':
         get_novel_txt(url, nid)
     elif site == 'ncode_syosetu_com':
         get_narou_novel_txt(url, nid)
-    if nid in background_tasks:
-        del background_tasks[nid]
+    with lock:
+        if nid in background_tasks:
+            del background_tasks[nid]
 
 def parse_novel(novel):
     title = novel.find('a').text
@@ -309,19 +315,21 @@ def start_scraping():
     session = Session()
     existing_novel = session.query(Novel).filter_by(nid=nid).first()
     session.close()
-
-    if existing_novel:
-        novel_store[nid] = [existing_novel.novel_text, existing_novel.title]
-        progress_store[nid] = [100, existing_novel.title]
-        return jsonify({"status": "ready", "nid": nid})
-    else:
-        try:
+    
+    with lock:
+        if nid in progress_store and progress_store[nid][0] < 100:
+            return jsonify({"status": "in-progress", "nid": nid, "progress": progress_store[nid][0]})
+        elif existing_novel:
+            novel_store[nid] = [existing_novel.novel_text, existing_novel.title]
+            progress_store[nid] = [100, existing_novel.title]
+            return jsonify({"status": "ready", "nid": nid})
+        elif nid not in background_tasks:
             task = threading.Thread(target=start_scraping_task, args=(novel_url, nid, site))
             task.start()
             background_tasks[nid] = task
             return jsonify({"status": "started", "nid": nid})
-        except Exception as e:
-            return jsonify({"error": str(e)}), 400
+        else:
+            return jsonify({"status": "already-started", "nid": nid})
 
 @app.route('/progress/<nid>', methods=['GET'])
 def get_progress(nid):
