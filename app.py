@@ -247,9 +247,8 @@ def get_narou_novel_txt(novel_url: str, nid: str):
 
 def start_scraping_task(url, nid, site):
     with lock:
-        if nid in progress_store and progress_store[nid].is_alive():
+        if nid in background_tasks and background_tasks[nid].is_alive():
             return
-        progress_store[nid] = [0, ""]
     if site == 'syosetu_org':
         get_novel_txt(url, nid)
     elif site == 'ncode_syosetu_com':
