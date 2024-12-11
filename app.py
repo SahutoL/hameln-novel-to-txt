@@ -315,15 +315,18 @@ def start_scraping():
     session.close()
     
     if existing_novel:
+        print("ready")
         novel_store[nid] = [existing_novel.novel_text, existing_novel.title]
         progress_store[nid] = [100, existing_novel.title]
         return jsonify({"status": "ready", "nid": nid})
     
     with lock:
         if nid in background_tasks and background_tasks[nid].is_alive():
+            print("in progress")
             return jsonify({"status": "in_progress", "nid": nid})
 
         try:
+            print("started")
             task = threading.Thread(target=start_scraping_task, args=(novel_url, nid, site))
             task.start()
             background_tasks[nid] = task
