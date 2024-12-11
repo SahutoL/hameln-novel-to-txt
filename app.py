@@ -246,8 +246,9 @@ def get_narou_novel_txt(novel_url: str, nid: str):
         print(f"Error fetching novel: {str(e)}")
 
 def start_scraping_task(url, nid, site):
+    current_thread = threading.current_thread()
     with lock:
-        if nid in background_tasks and background_tasks[nid].is_alive():
+        if nid in background_tasks and background_tasks[nid] is not current_thread and background_tasks[nid].is_alive():
             return
     if site == 'syosetu_org':
         get_novel_txt(url, nid)
