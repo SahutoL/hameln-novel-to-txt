@@ -1,6 +1,6 @@
 {
-  "name": "Hameln to .txt",
-  "short_name": "Hameln2Txt",
+  "name": "to .txt",
+  "short_name": "toTxt",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f8f9fa",
