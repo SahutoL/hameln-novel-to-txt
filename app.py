@@ -7,16 +7,8 @@ from bs4 import BeautifulSoup
 import concurrent.futures
 from time import sleep
 import threading, io, os, re, random, logging, cloudscraper
-from sqlalchemy import create_engine, Column, Integer, String, Text
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
 
 app = Flask(__name__)
-
-DATABASE_URL = os.environ.get('DATABASE_URL')
-engine = create_engine(DATABASE_URL)
-Base = declarative_base()
-Session = sessionmaker(bind=engine)
 
 logging.basicConfig(level=logging.INFO)
 
@@ -25,14 +17,6 @@ sh = logging.StreamHandler()
 logger.addHandler(sh)
 logger.setLevel(logging.INFO)
 
-class Novel(Base):
-    __tablename__ = 'novels'
-    id = Column(Integer, primary_key=True)
-    nid = Column(String, unique=True, nullable=False)
-    novel_text = Column(Text)
-    title = Column(String)
-
-Base.metadata.create_all(engine)
 
 progress_store = {}
 novel_store = {}
@@ -148,12 +132,7 @@ def get_novel_txt(novel_url: str, nid: str):
         novel_text = '\n\n'.join(filter(None, txt_data))
         novel_store[nid] = [novel_text, title]
         progress_store[nid] = [100, title]
-        
-        session = Session()
-        novel = Novel(nid=nid, novel_text=novel_text, title=title)
-        session.add(novel)
-        session.commit()
-        session.close()
+
     except Exception as e:
         print(f"Error fetching novel: {str(e)}")
 
@@ -235,12 +214,6 @@ def get_narou_novel_txt(novel_url: str, nid: str):
         novel_text = '\n\n'.join(filter(None, txt_data))
         novel_store[nid] = [novel_text, title]
         progress_store[nid] = [100, title]
-        
-        session = Session()
-        novel = Novel(nid=nid, novel_text=novel_text, title=title)
-        session.add(novel)
-        session.commit()
-        session.close()
         """
     except Exception as e:
         print(f"Error fetching novel: {str(e)}")
@@ -310,16 +283,7 @@ def start_scraping():
         site = 'ncode_syosetu_com'
     else:
         return jsonify({"error": "Invalid URL format. Please enter a valid URL."}), 400
-    
-    session = Session()
-    existing_novel = session.query(Novel).filter_by(nid=nid).first()
-    session.close()
-    
-    if existing_novel:
-        novel_store[nid] = [existing_novel.novel_text, existing_novel.title]
-        progress_store[nid] = [100, existing_novel.title]
-        return jsonify({"status": "ready", "nid": nid})
-    
+
     with lock:
         if nid in background_tasks and background_tasks[nid].is_alive():
             return jsonify({"status": "in_progress", "nid": nid})
@@ -341,15 +305,11 @@ def get_progress(nid):
 
 @app.route('/download/<nid>', methods=['GET'])
 def download_novel(nid):
-    session = Session()
-    novel = session.query(Novel).filter_by(nid=nid).first()
-    session.close()
-
     if novel:
         buffer = io.BytesIO()
-        buffer.write(novel.novel_text.encode('utf-8'))
+        buffer.write(novel_store[nid][0].encode('utf-8'))
         buffer.seek(0)
-        return send_file(buffer, as_attachment=True, download_name=f'{novel.title}.txt', mimetype='text/plain')
+        return send_file(buffer, as_attachment=True, download_name=f'{novel_store[nid][1]}.txt', mimetype='text/plain')
     else:
         return jsonify({"error": "Novel not found or scraping not completed"}), 404
 
