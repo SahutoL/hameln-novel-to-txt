@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: hameln-novel-to-txt
+    name: to-txt
     env: python
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app
