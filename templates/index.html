@@ -17,6 +17,9 @@
         <div class="progress-circle" id="progress-circle" data-progress="0"></div>
     </div>
     <div class="container mt-5">
+        <div class="d-flex justify-content-end mb-3">
+            <button id="theme-toggle" class="btn btn-secondary">ダークモード</button>
+        </div>
         <div class="card">
             <div class="card-body" id="converter">
                 <h1 class="card-title text-center mb-4">-> .txt</h1>
@@ -291,6 +294,19 @@
         });
     })
     .catch(error => console.error('Error loading categories:', error));
+    
+    const themeToggle = document.getElementById('theme-toggle');
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    const setTheme = (theme) => {
+        document.body.className = theme;
+        localStorage.setItem('theme', theme);
+        themeToggle.textContent = theme === 'dark' ? 'ライトモード' : 'ダークモード';
+    };
+    themeToggle.addEventListener('click', () => {
+        const newTheme = document.body.className === 'dark' ? 'light' : 'dark';
+        setTheme(newTheme);
+    });
+    setTheme(currentTheme)
     
     document.getElementById('scrape-form').addEventListener('submit', function(e) {
         e.preventDefault();
