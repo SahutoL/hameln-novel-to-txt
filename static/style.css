@@ -509,3 +509,29 @@ body {
 .open-button:hover {
     background-color: #005bb5;
 }
+
+
+body.dark {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+body.dark .card {
+    background-color: #1e1e1e;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+}
+
+body.dark .btn-primary {
+    background-color: #007bff;
+    color: #fff;
+}
+
+body.dark .btn-secondary {
+    background-color: #333;
+    color: #fff;
+}
+
+body.dark .form-text,
+body.dark .form-label {
+    color: #ccc;
+}
