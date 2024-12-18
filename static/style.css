@@ -511,6 +511,8 @@ body {
 }
 
 
+
+
 body.dark {
     background-color: #121212;
     color: #e0e0e0;
@@ -518,20 +520,104 @@ body.dark {
 
 body.dark .card {
     background-color: #1e1e1e;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+    border-color: #333;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
 body.dark .btn-primary {
     background-color: #007bff;
-    color: #fff;
+    color: #ffffff;
+}
+
+body.dark .btn-primary:hover {
+    background-color: #0056b3;
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.5);
 }
 
 body.dark .btn-secondary {
-    background-color: #333;
-    color: #fff;
+    background-color: #424242;
+    color: #e0e0e0;
 }
 
-body.dark .form-text,
-body.dark .form-label {
-    color: #ccc;
+body.dark .btn-secondary:hover {
+    background-color: #616161;
+    box-shadow: 0 4px 15px rgba(97, 97, 97, 0.5);
+}
+
+body.dark .form-control {
+    background-color: #1e1e1e;
+    border-color: #333;
+    color: #e0e0e0;
+}
+
+body.dark .form-control::placeholder {
+    color: #9e9e9e;
+}
+
+body.dark .form-check-label {
+    color: #e0e0e0;
+}
+
+body.dark .progress {
+    background-color: #333;
+}
+
+body.dark .progress-bar {
+    background-color: #007bff;
+}
+
+body.dark .alert {
+    background-color: #1e1e1e;
+    border-color: #333;
+    color: #e0e0e0;
+}
+
+body.dark .select-wrapper select {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+    border-color: #333;
+}
+
+body.dark .search-result-header {
+    background-color: #1e1e1e;
+    border-bottom: 1px solid #333;
+}
+
+body.dark .search-result-content {
+    background-color: #2a2a2a;
+}
+
+body.dark .info-item {
+    background-color: #2a2a2a;
+}
+
+body.dark .badge {
+    background-color: #333;
+    color: #e0e0e0;
+}
+
+body.dark .badge-status-短編 {
+    background-color: #1e88e5;
+}
+
+body.dark .badge-status-連載 {
+    background-color: #43a047;
+}
+
+body.dark .badge-status-未完 {
+    background-color: #fbc02d;
+}
+
+body.dark .badge-status-完結 {
+    background-color: #e53935;
+}
+
+body.dark .tag-keyword {
+    background-color: #004d40;
+    color: #80cbc4;
+}
+
+body.dark .tag-alert {
+    background-color: #ffcc80;
+    color: #e65100;
 }
