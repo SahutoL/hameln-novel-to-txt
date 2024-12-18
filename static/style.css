@@ -607,7 +607,7 @@ body.dark .custom-checkbox:hover input ~ .checkmark {
     background-color: #444;
 }
 
-body.dark .filter-table input[type="number"] {
+body.dark .filter-table input[type="number"], input[type="text"] {
     background-color: #333;
     border-color: #444;
     color: #e0e0e0;
